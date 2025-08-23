@@ -1,0 +1,6 @@
+@CaloryCalcApp.WebAPI_HostAddress = http://localhost:5122
+
+GET {{CaloryCalcApp.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
