@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaloryCalcApp.WebAPI", "CaloryCalcApp.WebAPI\CaloryCalcApp.WebAPI.csproj", "{75BCE974-0C65-4876-8BA7-6ED9C792249A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaloryCalcLibrary", "CaloryCalcLibrary\CaloryCalcLibrary.csproj", "{545F7464-E70A-457F-B658-8F1D30BE6C10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{75BCE974-0C65-4876-8BA7-6ED9C792249A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75BCE974-0C65-4876-8BA7-6ED9C792249A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75BCE974-0C65-4876-8BA7-6ED9C792249A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{545F7464-E70A-457F-B658-8F1D30BE6C10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{545F7464-E70A-457F-B658-8F1D30BE6C10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{545F7464-E70A-457F-B658-8F1D30BE6C10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{545F7464-E70A-457F-B658-8F1D30BE6C10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
