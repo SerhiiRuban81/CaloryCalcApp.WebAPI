@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 
 namespace CaloryCalcLibrary
 {
+    public enum Sex
+    {
+        Male,
+        Female
+    }
+
     public class HealthyUser : IdentityUser
     {
         public double Weight { get; set; } = default!; // Вага
@@ -14,6 +20,8 @@ namespace CaloryCalcLibrary
         public int Height { get; set; } = default!; // Зріст
 
         public DateOnly DateOfBirth { get; set; } // Дата народження
+
+        public string Sex { get; set; } = default!;
 
     }
 }
