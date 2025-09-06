@@ -25,8 +25,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Data\NewFolder\" />
     <Folder Include="Models\DTOs\DishProduct\" />
     <Folder Include="Models\ViewModels\" />
+    <Folder Include="Views\Account\" />
+    <Folder Include="Views\Home\" />
+    <Folder Include="Views\Shared\" />
   </ItemGroup>
 
   <ItemGroup>

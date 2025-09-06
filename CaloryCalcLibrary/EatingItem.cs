@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace CaloryCalcLibrary
 {
-    public class DishProduct
+    public class EatingItem
     {
         public int Id {  get; set; }
-
-        [ForeignKey(nameof(Product))]
-        public int ProductId { get; set; }
 
         [ForeignKey(nameof(Dish))]
         public int DishId { get; set; }
 
-        public string MeasurementUnit { get; set; } = default!;
-
         public float Amount { get; set; }
+
+        [ForeignKey(nameof(HealthyUser))]
+        public int UserId { get; set; }
+
+        public DateTime MealTime { get; set; }
     }
 }
