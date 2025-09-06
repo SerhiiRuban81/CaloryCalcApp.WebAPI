@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CaloryCalcLibrary
 {
-    public class EatingItem
+    public class HealthyUserDish
     {
         public int Id {  get; set; }
         
@@ -15,9 +15,12 @@ namespace CaloryCalcLibrary
 
         public float Amount { get; set; }
 
-        public int HealthyUserId { get; set; }
+        public string HealthyUserId { get; set; } = default!;
 
-        public DateTime MealTime { get; set; }        
+        public DateTime MealTime { get; set; }
+
+        public HealthyUser HealthyUser { get; set; } = null!;
+        public Dish Dish { get; set; } = null!;
 
     }
 }
