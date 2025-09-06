@@ -1,4 +1,5 @@
 using CaloryCalcApp.WebAPI.Data;
+using CaloryCalcApp.WebAPI.Extensions;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -40,7 +41,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.MapIdentityApi<HealthyUser>();
+app.CustomMapIdentityApi<HealthyUser>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
