@@ -23,5 +23,8 @@ namespace CaloryCalcLibrary
 
         public string Sex { get; set; } = default!;
 
+        public List<Dish> Dishes { get; set; } = [];
+
+
     }
 }

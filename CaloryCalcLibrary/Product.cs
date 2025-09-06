@@ -15,15 +15,19 @@ namespace CaloryCalcLibrary
         [Display(Name = "Product")]
         public string Name { get; set; } = default!;
 
-        public float Density { get; set; }
+        public double Density { get; set; }
 
-        public float Calories { get; set; }
+        public double Calories { get; set; }
 
-        public float Fats { get; set; }
+        public double Fats { get; set; }
 
-        public float Carbohydrates { get; set; }
+        public double Carbohydrates { get; set; }
 
-        public float Proteins { get; set; }
+        public double Proteins { get; set; }
+
+        public List<Dish> Dishes { get; set; } = [];
+
+        public List<DishProduct> DishProducts { get; set; } = [];
 
     }
 }

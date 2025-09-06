@@ -8,5 +8,11 @@ namespace CaloryCalcLibrary
 
         [Display(Name = "Dish name")]
         public string Name { get; set; } = default!;
+
+        public List<Product> Products { get; set; } = [];
+
+        public List<DishProduct> DishProducts { get; set; } = [];
+
+        public List<HealthyUser> HealthyUsers { get; set; } = [];
     }
 }
