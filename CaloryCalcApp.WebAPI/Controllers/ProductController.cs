@@ -1,4 +1,5 @@
 ﻿using CaloryCalcApp.WebAPI.Data;
+using CaloryCalcApp.WebAPI.Models.DTOs.Product;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
             this.context = context;
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct(int id)
         {
             Product? product = await context.Products.FindAsync(id);
@@ -30,8 +31,18 @@ namespace CaloryCalcApp.WebAPI.Controllers
         public async Task<IEnumerable<Product>> GetProducts() => await context.Products.ToListAsync();
 
         [HttpPost]
-        public async Task<IActionResult> PostProduct(Product product)
+        public async Task<IActionResult> PostProduct(ProductDTO productDTO)
         {
+            Product product = new Product
+            {
+                Name = productDTO.Name,
+                Density = productDTO.Density,
+                Calories = productDTO.Calories,
+                Proteins = productDTO.Proteins,
+                Fats = productDTO.Fats,
+                Carbohydrates = productDTO.Carbohydrates
+            };
+
             context.Products.Add(product);
             await context.SaveChangesAsync();
             return Ok(product);
