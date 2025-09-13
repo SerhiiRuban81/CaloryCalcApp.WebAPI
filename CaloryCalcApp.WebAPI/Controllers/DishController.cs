@@ -18,6 +18,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
             this.context = context;
         }
 
+
         [HttpGet]
         public async Task<IEnumerable<Dish>> GetDishes() => await context.Dishes.ToListAsync();
 
