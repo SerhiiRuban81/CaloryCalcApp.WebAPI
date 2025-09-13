@@ -21,7 +21,10 @@ namespace CaloryCalcApp.WebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct(int id)
         {
-            Product? product = await context.Products.FindAsync(id);
+            Product? product = await context.Products
+                .Include(p => p.DishProducts)
+                .Include(p => p.Dishes)
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (product == null) return NotFound();
 
             return Ok(product);

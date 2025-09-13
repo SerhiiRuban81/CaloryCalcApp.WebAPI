@@ -24,7 +24,11 @@ namespace CaloryCalcApp.WebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDish(int id)
         {
-            Dish? dish = await context.Dishes.FindAsync(id);
+            Dish? dish = await context.Dishes
+                .Include(d => d.Products)
+                .Include(d => d.DishProducts)
+                .Include(d => d.HealthyUsers)
+                .FirstOrDefaultAsync(d => d.Id == id);
             if (dish == null) return NotFound();
 
             return Ok(dish);
@@ -33,15 +37,19 @@ namespace CaloryCalcApp.WebAPI.Controllers
         [HttpGet("{id}/calc")]
         public async Task<IActionResult> GetGlobalCalculations(int id)
         {
-            Dish? dish = await context.Dishes.FindAsync(id);
+            Dish? dish = await context.Dishes
+                .Include(d => d.Products)
+                .Include(d => d.DishProducts)
+                .Include(d => d.HealthyUsers)
+                .FirstOrDefaultAsync(d => d.Id == id);
             if (dish == null) return NotFound();
 
             CalculationResult result = new CalculationResult()
             {
-                GlobalCalories = dish.GlobalCalories,
-                GlobalFats = dish.GlobalFats,
-                GlobalCarbohydrates = dish.GlobalCarbohydrates,
-                GlobalProteins = dish.GlobalProteins
+                GlobalCalories = dish.GetGlobalCalories(),
+                GlobalFats = dish.GetGlobalFats(),
+                GlobalCarbohydrates = dish.GetGlobalCarbohydrates(),
+                GlobalProteins = dish.GetGlobalProteins()
             };
 
             return Ok(result);

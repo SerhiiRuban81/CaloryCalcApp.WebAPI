@@ -15,17 +15,13 @@ namespace CaloryCalcLibrary
         public List<DishProduct> DishProducts { get; set; } = [];
 
         public List<HealthyUser> HealthyUsers { get; set; } = [];
+        
+        public double GetGlobalFats() => DishProducts.Select(t => t.Amount * t.Product.Fats * (t.MeasurementUnit == "g" ? 1 : t.Product.Density) / 100).Sum();
 
-        [NotMapped]
-        public double GlobalFats => DishProducts.Select(t => t.Amount * t.Product.Fats * (t.MeasurementUnit == "g" ? 1 : t.Product.Density) / 100).Sum();
+        public double GetGlobalCalories() => DishProducts.Select(t => t.Amount * t.Product.Calories * (t.MeasurementUnit == "g" ? 1 : t.Product.Density) / 100).Sum();
 
-        [NotMapped]
-        public double GlobalCalories => DishProducts.Select(t => t.Amount * t.Product.Calories * (t.MeasurementUnit == "g" ? 1 : t.Product.Density) / 100).Sum();
+        public double GetGlobalCarbohydrates() => DishProducts.Select(t => t.Amount * t.Product.Carbohydrates * (t.MeasurementUnit == "g" ? 1 : t.Product.Density) / 100).Sum();
 
-        [NotMapped]
-        public double GlobalCarbohydrates => DishProducts.Select(t => t.Amount * t.Product.Carbohydrates * (t.MeasurementUnit == "g" ? 1 : t.Product.Density) / 100).Sum();
-
-        [NotMapped]
-        public double GlobalProteins => DishProducts.Select(t => t.Amount * t.Product.Proteins * (t.MeasurementUnit == "g" ? 1 : t.Product.Density) / 100).Sum();
+        public double GetGlobalProteins() => DishProducts.Select(t => t.Amount * t.Product.Proteins * (t.MeasurementUnit == "g" ? 1 : t.Product.Density) / 100).Sum();
     }
 }
