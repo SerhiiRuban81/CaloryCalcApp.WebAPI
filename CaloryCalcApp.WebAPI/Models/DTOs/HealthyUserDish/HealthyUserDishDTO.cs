@@ -1,6 +1,6 @@
 ﻿namespace CaloryCalcApp.WebAPI.Models.DTOs.HealthyUserDish
 {
-    public class HealhyUserDishDTO
+    public class HealthyUserDishDTO
     {
         public int Id { get; set; }
 

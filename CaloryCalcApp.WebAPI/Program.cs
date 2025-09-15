@@ -1,7 +1,9 @@
 using CaloryCalcApp.WebAPI.Data;
+using CaloryCalcApp.WebAPI.Profiles;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -19,8 +21,15 @@ builder.Services.AddDbContext<CaloriesContext>(options => {
     options.UseSqlServer(connStr);
 });
 
+
 builder.Services.AddIdentityApiEndpoints<HealthyUser>()
     .AddEntityFrameworkStores<CaloriesContext>();
+
+//builder.Services.AddAutoMapper(cfg => { }, typeof(ProductProfile),
+//    typeof(DishProfile), typeof(HealthyUserProfile), typeof(HealthyUserDishProfile),
+//    typeof(DishProductProfile));
+builder.Services.AddAutoMapper(cfg => { });
+
 builder.Services.AddSwaggerGen(options => {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     {
