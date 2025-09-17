@@ -1,0 +1,8 @@
+body{
+    background-color: #f5f5f5;
+}
+#divCatalogRecipesDishes{
+    position: relative;
+    top: 10vh;
+    height: 250px;
+}
