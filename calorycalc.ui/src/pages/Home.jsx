@@ -1,9 +1,12 @@
+import MainPanel from "../components/NavigationMain/MainPanel";
+
 
 export default function Home() {
 
     return (
-        <>
-            <p>Main station</p>
+        < >
+           <MainPanel />
         </>
+
     )
 }

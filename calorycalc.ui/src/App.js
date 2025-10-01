@@ -12,6 +12,7 @@ import { testProducts } from "./components/CatalogProducts/testData";
 
 
 function App() {
+
   return (
     <Router>
       <div className="App container" style={{ maxWidth: "90%" }}>
