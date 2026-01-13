@@ -11,9 +11,9 @@ namespace CaloryCalcLibrary
     {
         public int Id {  get; set; }
         
-        public int DishId { get; set; }
+        public int DishId { get; set; } // Foreign key to Dish
 
-        public float Amount { get; set; }
+        public float Amount { get; set; } // Amount of the dish consumed
 
         public string HealthyUserId { get; set; } = default!;
 

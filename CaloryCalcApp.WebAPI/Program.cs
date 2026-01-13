@@ -15,8 +15,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-string connStr = builder.Configuration.GetConnectionString("LocalDb")
-    ?? throw new InvalidOperationException("You should provide connection string!");
+string connStr = builder.Configuration.GetConnectionString("CaloriesContext")
+    ?? throw new InvalidOperationException("Connection string 'CaloriesContext' not found!");
 builder.Services.AddDbContext<CaloriesContext>(options => {
     options.UseSqlServer(connStr);
 });
@@ -41,19 +41,46 @@ builder.Services.AddSwaggerGen(options => {
 }
     );
 builder.Services.AddEndpointsApiExplorer();
+// Adding Controllers with Views
+builder.Services.AddControllersWithViews();
 var app = builder.Build();
 
+/////////////////////////////////////////
+//using (IServiceScope scope = app.Services.CreateScope())
+//{
+//    IServiceProvider serviceProvider = scope.ServiceProvider;
+//    await SeedData.Initialize(
+//    serviceProvider,
+//    app.Environment,
+//    app.Configuration
+//    );
+//}
+
+
+
+/////////////////////////////////////////
+///
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    //app.UseExceptionHandler("/Home/Error");
+    //app.UseHsts();
 }
 app.MapIdentityApi<HealthyUser>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseDefaultFiles(); // Serve default files like index.html
+app.UseStaticFiles(); // Serve static files from wwwroot
 
 app.MapControllers();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Run();
+app.Run(
+
+
+);

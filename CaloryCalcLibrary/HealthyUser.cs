@@ -21,9 +21,9 @@ namespace CaloryCalcLibrary
 
         public DateOnly DateOfBirth { get; set; } // Дата народження
 
-        public string Sex { get; set; } = default!;
+        public string Sex { get; set; } = default!; // Стать
 
-        public List<Dish> Dishes { get; set; } = [];
+        public List<Dish> Dishes { get; set; } = []; // Список страв користувача
 
 
     }
