@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUserDTO;
+using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers;
 using CaloryCalcLibrary;
 
 namespace CaloryCalcApp.WebAPI.Profiles

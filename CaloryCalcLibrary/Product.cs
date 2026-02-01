@@ -15,15 +15,20 @@ namespace CaloryCalcLibrary
         [Display(Name = "Product")]
         public string Name { get; set; } = default!; // Назва продукту
 
-        public double Density { get; set; } // Щільність продукту (г/мл)
+        [Range(0, double.MaxValue)]
+        public double? Density { get; set; } // Щільність продукту (г/мл)
 
-        public double Calories { get; set; } // Калорійність на 100 г або мл
+        [Range(0, double.MaxValue)]
+        public double? Calories { get; set; } // Калорійність на 100 г або мл
 
-        public double Fats { get; set; }  // Жири на 100 г або мл
+        [Range(0, double.MaxValue)]
+        public double? Fats { get; set; } // Жири на 100 г або мл
 
-        public double Carbohydrates { get; set; } // Вуглеводи на 100 г або мл
+        [Range(0, double.MaxValue)]
+        public double? Carbohydrates { get; set; } // Вуглеводи на 100 г або мл
 
-        public double Proteins { get; set; } // Білки на 100 г або мл
+        [Range(0, double.MaxValue)]
+        public double? Proteins { get; set; } // Білки на 100 г або мл
 
         public List<Dish> Dishes { get; set; } = []; // Список страв, що містять цей продукт
 

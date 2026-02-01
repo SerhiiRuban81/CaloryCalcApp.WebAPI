@@ -17,7 +17,7 @@ namespace CaloryCalcLibrary
         [ForeignKey(nameof(Dish))]
         public int DishId { get; set; }
 
-        public string MeasurementUnit { get; set; } = default!;
+        public string MeasurementUnit { get; set; } = default!; // "g" for grams, "ml" for milliliters, etc.
 
         public float Amount { get; set; }
 

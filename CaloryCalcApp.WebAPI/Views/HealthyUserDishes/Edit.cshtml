@@ -1,0 +1,49 @@
+﻿@model CaloryCalcLibrary.HealthyUserDish
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>HealthyUserDish</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="DishId" class="control-label"></label>
+                <select asp-for="DishId" class="form-control" asp-items="ViewBag.DishId"></select>
+                <span asp-validation-for="DishId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HealthyUserId" class="control-label"></label>
+                <select asp-for="HealthyUserId" class="form-control" asp-items="ViewBag.HealthyUserId"></select>
+                <span asp-validation-for="HealthyUserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MealTime" class="control-label"></label>
+                <input asp-for="MealTime" class="form-control" />
+                <span asp-validation-for="MealTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

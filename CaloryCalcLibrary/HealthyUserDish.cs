@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CaloryCalcLibrary
 {
-    public class HealthyUserDishDTO
+    public class HealthyUserDish
     {
         public int Id {  get; set; }
         

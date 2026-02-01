@@ -1,0 +1,55 @@
+﻿body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+    body > * {
+        flex: 0 1 auto;
+    }
+
+#main {
+    flex-grow: 1;
+}
+
+/*Brand label style*/
+.brand-label {
+    font-family: sans-serif, Arial, Helvetica;
+    font-weight: bold;
+    padding: 25px;
+    font-size: 3.5vh;
+    color: rgb(128, 246, 150);
+}
+
+
+
+/*Brand span*/
+.brand-span {
+    font-family: sans-serif, Arial, Helvetica;
+    font-weight: bold;
+    color: rgb(202, 244, 244);
+}
+
+/*
+    `primary-button` customization to make it `orange`
+*/
+.btn-primary {
+    background-color: rgb(202, 239, 209);
+    font-weight: bold;
+    border: 1px solid rgb(205, 241, 211);
+}
+
+.btn.btn-primary:hover {
+    background-color: #50C878;
+    border: 1px solid rgb(80, 200, 120);
+}
+
+
+/*Day theme*/
+body {
+    background-color: rgb(236, 239, 241);
+}
+
+header {
+    background-color: rgb(80, 200, 120);
+}

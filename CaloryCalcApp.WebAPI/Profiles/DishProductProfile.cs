@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using CaloryCalcApp.WebAPI.Models.DTOs.DishProduct;
+using CaloryCalcApp.WebAPI.Models.DTOs.DishProducts;
 using CaloryCalcLibrary;
 
 namespace CaloryCalcApp.WebAPI.Profiles
 {
     public class DishProductProfile : Profile
     {
-        DishProductProfile()
+        public DishProductProfile()
         {
             CreateMap<DishProduct, DishProductDTO>()
                 .ReverseMap();

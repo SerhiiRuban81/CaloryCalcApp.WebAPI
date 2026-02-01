@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CaloryCalcLibrary;
-using CaloryCalcApp.WebAPI.Models.DTOs.Product;
+using CaloryCalcApp.WebAPI.Models.DTOs.Products;
 
 namespace CaloryCalcApp.WebAPI.Profiles
 {
