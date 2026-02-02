@@ -68,7 +68,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
 
             if (ModelState.IsValid)
             {
-                var healthyUserDish = _mapper.Map<HealthyUserDish>(healthyUserDishDTO);
+                HealthyUserDish healthyUserDish = _mapper.Map<HealthyUserDish>(healthyUserDishDTO);
                 _context.Add(healthyUserDish);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
