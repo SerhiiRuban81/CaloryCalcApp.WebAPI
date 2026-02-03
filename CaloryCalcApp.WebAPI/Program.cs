@@ -76,15 +76,17 @@ builder.Services.AddAutoMapper(cfg =>
 var app = builder.Build();
 
 /////////////////////////////////////////
-//using (IServiceScope scope = app.Services.CreateScope())
-//{
-//    IServiceProvider serviceProvider = scope.ServiceProvider;
-//    await SeedData.Initialize(
-//    serviceProvider,
-//    app.Environment,
-//    app.Configuration
-//    );
-//}
+/// LET'S INITIALIZE OUR DATABASE WITH STARTING DATA ON CREATION
+/////////////////////////////////////////
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    IServiceProvider serviceProvider = scope.ServiceProvider;
+    await SeedData.Initialize(
+    serviceProvider,
+    app.Environment,
+    app.Configuration
+    );
+}
 
 
 

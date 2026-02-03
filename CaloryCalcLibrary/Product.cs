@@ -19,7 +19,7 @@ namespace CaloryCalcLibrary
         public double? Density { get; set; } // Щільність продукту (г/мл)
 
         [Range(0, double.MaxValue)]
-        public double? Calories { get; set; } // Калорійність на 100 г або мл
+        public double? Calories { get; set; } // Калорійність на 100 г або 100 мл
 
         [Range(0, double.MaxValue)]
         public double? Fats { get; set; } // Жири на 100 г або мл
