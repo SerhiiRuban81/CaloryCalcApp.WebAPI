@@ -3,6 +3,7 @@ using CaloryCalcApp.WebAPI.Data;
 using CaloryCalcApp.WebAPI.Models.DTOs.Dishes;
 using CaloryCalcApp.WebAPI.Models.DTOs.DishProducts;
 using CaloryCalcLibrary;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace CaloryCalcApp.WebAPI.Controllers
 {
+    [Authorize]
     public class DishesController : Controller
     {
         private readonly CaloriesContext _context;

@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using CaloryCalcApp.WebAPI.Data;
+using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUserDishes;
+using CaloryCalcLibrary;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using CaloryCalcApp.WebAPI.Data;
-using CaloryCalcLibrary;
-using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUserDishes;
-using AutoMapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CaloryCalcApp.WebAPI.Controllers
 {
+    [Authorize]
     public class HealthyUserDishesController : Controller
     {
         private readonly CaloriesContext _context;

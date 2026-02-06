@@ -21,7 +21,11 @@
     color: rgb(128, 246, 150);
 }
 
-
+/*Style for @RenderBody in Registration and Login pages*/
+.col-md-8 {
+    margin: 0 auto;
+    padding: 20px;
+}
 
 /*Brand span*/
 .brand-span {
