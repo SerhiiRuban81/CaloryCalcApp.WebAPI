@@ -50,9 +50,22 @@ builder.Services.AddAutoMapper(cfg =>
         cfg.AddProfile(new DishProfile());
         cfg.AddProfile(new HealthyUserDishProfile());
         cfg.AddProfile(new HealthyUserProfile());
-
     }   
 );
+
+// Let's configure our Services to make sure that User Authentificated before getting access to the app
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = "Cookies";
+    options.DefaultChallengeScheme = "Cookies";
+})
+ .AddCookie("Cookies", options =>
+ {
+     options.LoginPath = "/Account/Login"; // Path to the login page
+     options.LogoutPath = "/Account/Logout"; // Path to the logout page
+     options.AccessDeniedPath = "/Account/AccessDenied"; // Path to the access denied page
+ });
+
 var app = builder.Build();
 
 /////////////////////////////////////////
@@ -94,5 +107,7 @@ app.MapControllerRoute(
     name: "default",
     //pattern: "{controller=Home}/{action=Index}/{id?}");
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
 
 app.Run();
