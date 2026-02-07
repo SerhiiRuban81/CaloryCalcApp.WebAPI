@@ -1,0 +1,49 @@
+﻿@* @model CaloryCalcLibrary.Dish *@
+@model CaloryCalcApp.WebAPI.Models.DTOs.Dishes.DishDTO;
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Dish</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            Calories
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TotalCalories)
+        </dd>
+        <dt class="col-sm-2">
+            Fats
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TotalFats)
+        </dd>
+        <dt class="col-sm-2">
+            Carbohydrates
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TotalCarbohydrates)
+        </dd>
+        <dt class="col-sm-2">
+            Proteins
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TotalProteins)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

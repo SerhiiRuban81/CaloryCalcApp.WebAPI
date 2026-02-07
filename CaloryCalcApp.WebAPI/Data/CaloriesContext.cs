@@ -1,12 +1,19 @@
-﻿using CaloryCalcLibrary;
+﻿using CaloryCalcApp.WebAPI.Models.DTOs.Dishes;
+using CaloryCalcApp.WebAPI.Models.DTOs.DishProducts;
+using CaloryCalcApp.WebAPI.Models.DTOs.Products;
+using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using CaloryCalcApp.WebAPI.Models.DTOs.Admins;
+using CaloryCalcApp.WebAPI.Models.DTOs.Admin;
 
 namespace CaloryCalcApp.WebAPI.Data
 {
     public class CaloriesContext : IdentityDbContext<HealthyUser>
     {
+        //public int Id { get; set; }
+
         public CaloriesContext(DbContextOptions<CaloriesContext> options) : base(options) { }
 
         public DbSet<Dish> Dishes { get; set; }
@@ -31,6 +38,10 @@ namespace CaloryCalcApp.WebAPI.Data
                 .UsingEntity<HealthyUserDish>(e =>
                 e.Property(c => c.MealTime).HasDefaultValueSql("GETUTCDATE()"));
         }
+        //public DbSet<CaloryCalcApp.WebAPI.Models.DTOs.Products.ProductDTO> ProductDTO { get; set; } = default!;
+        //public DbSet<CaloryCalcApp.WebAPI.Models.DTOs.Admins.RegisterUserDTO> RegisterUserDTO { get; set; } = default!;
+        //public DbSet<CaloryCalcApp.WebAPI.Models.DTOs.Admin.LoginUserDTO> LoginUserDTO { get; set; } = default!;
+        //public DbSet<CaloryCalcApp.WebAPI.Models.DTOs.Admins.RegisterUserDTO> RegisterUserDTO { get; set; } = default!;
 
     }
 }
