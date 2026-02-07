@@ -13,7 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // MVC + Views
 // Add services to the container.
-//builder.Services.AddControllers();
 // Adding Controllers with Views
 builder.Services.AddControllersWithViews();
 
@@ -30,8 +29,6 @@ builder.Services.AddDbContext<CaloriesContext>(options => {
 });
 
 // Identity
-//builder.Services.AddIdentityApiEndpoints<HealthyUser>()
-//    .AddEntityFrameworkStores<CaloriesContext>();
 builder.Services.AddIdentity<HealthyUser, IdentityRole>()
     .AddEntityFrameworkStores<CaloriesContext>()
     .AddDefaultTokenProviders();
@@ -66,18 +63,6 @@ builder.Services.AddAutoMapper(cfg =>
 }
 );
 
-//// Let's configure our Services to make sure that User Authentificated before getting access to the app
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultAuthenticateScheme = "Cookies";
-//    options.DefaultChallengeScheme = "Cookies";
-//})
-// .AddCookie("Cookies", options =>
-// {
-//     options.LoginPath = "/Account/Login"; // Path to the login page
-//     options.LogoutPath = "/Account/Logout"; // Path to the logout page
-//     options.AccessDeniedPath = "/Account/AccessDenied"; // Path to the access denied page
-// });
 
 var app = builder.Build();
 
@@ -106,7 +91,7 @@ using (IServiceScope scope = app.Services.CreateScope())
 //    //app.UseHsts();
 //}
 
-//app.MapIdentityApi<HealthyUser>();
+
 app.UseHttpsRedirection();
 app.UseStaticFiles(); // Serve static files from wwwroot
 
@@ -120,7 +105,6 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapControllerRoute(
     name: "default",
-    //pattern: "{controller=Home}/{action=Index}/{id?}");
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
