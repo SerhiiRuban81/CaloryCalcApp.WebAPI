@@ -1,11 +1,13 @@
 ﻿using CaloryCalcApp.WebAPI.Models.DTOs.Admin;
 using CaloryCalcApp.WebAPI.Models.DTOs.Admins;
 using CaloryCalcLibrary;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CaloryCalcApp.WebAPI.Controllers
 {
+    [Authorize]
     public class AccountController : Controller
     {
         private readonly UserManager<HealthyUser> userManager;
@@ -27,6 +29,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Register(RegisterUserDTO dTO)
         {
@@ -59,11 +62,13 @@ namespace CaloryCalcApp.WebAPI.Controllers
             }
         }
 
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(LoginUserDTO dTO)
         {
