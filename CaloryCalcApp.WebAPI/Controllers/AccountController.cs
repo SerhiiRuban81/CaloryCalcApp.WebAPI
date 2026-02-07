@@ -19,11 +19,14 @@ namespace CaloryCalcApp.WebAPI.Controllers
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
+
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult Register()
         {
             return View();
@@ -97,6 +100,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [AllowAnonymous]
         public IActionResult AccessDenied()
         {
             return View();
