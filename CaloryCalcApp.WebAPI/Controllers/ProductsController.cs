@@ -6,10 +6,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using X.PagedList.Mvc;
+using X.PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using X.PagedList.Extensions;
+using X.PagedList;
 
 namespace CaloryCalcApp.WebAPI.Controllers
 {
@@ -26,10 +30,30 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await _context.Products.ToListAsync());
+        //}
+
+        // Modified Index action to support pagination
+        public ActionResult Index(int page = 1, int pageSize = 10, int? oldPageSize = null)
         {
-            return View(await _context.Products.ToListAsync());
+            if (oldPageSize.HasValue && oldPageSize.Value != pageSize)
+            {
+                int firstItemIndex = (page - 1) * oldPageSize.Value;
+                page = firstItemIndex / pageSize + 1;
+            }
+
+            var products = _context.Products.OrderBy(p => p.Id);
+
+            var pagedProducts = products.ToPagedList(page, pageSize);
+
+            ViewBag.PageSize = pageSize;
+            ViewBag.Page = page;
+
+            return View(pagedProducts);
         }
+
 
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
