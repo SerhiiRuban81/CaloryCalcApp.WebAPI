@@ -2,6 +2,7 @@
 using CaloryCalcApp.WebAPI.Data;
 using CaloryCalcApp.WebAPI.Models.DTOs.Dishes;
 using CaloryCalcApp.WebAPI.Models.DTOs.DishProducts;
+using CaloryCalcApp.WebAPI.Models.DTOs.Products;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,13 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using X.PagedList.Mvc;
+using X.PagedList;
+using X.PagedList.Extensions;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,10 +36,34 @@ namespace CaloryCalcApp.WebAPI.Controllers
             _mapper = mapper;
         }
 
-        // GET: Dishes
-        public async Task<IActionResult> Index()
+        //// GET: Dishes
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await _context.Dishes.ToListAsync());
+        //}
+        public ActionResult Index(int page = 1, int pageSize = 10, int? oldPageSize = null)
         {
-            return View(await _context.Dishes.ToListAsync());
+            if (oldPageSize.HasValue && oldPageSize.Value != pageSize)
+            {
+                int firstItemIndex = (page - 1) * oldPageSize.Value;
+                page = firstItemIndex / pageSize + 1;
+            }
+
+            // Including related tables to get all required data (table Dishes contains only Dish names)
+            var dishes = _context.Dishes
+                .Include(d => d.DishProducts)
+                .ThenInclude(dp => dp.Product)
+                .OrderBy(p => p.Id).ToList();
+            var dishesDTO = _mapper.Map<List<DishDTO>>(dishes);
+
+
+            var pagedDishes = dishesDTO.ToPagedList(page, pageSize);
+
+            
+            ViewBag.PageSize = pageSize;
+            ViewBag.Page = page;
+
+            return View(pagedDishes);
         }
 
         // GET: Dishes/Details/5
@@ -52,10 +84,21 @@ namespace CaloryCalcApp.WebAPI.Controllers
             }
             DishDTO dishDTO = _mapper.Map<DishDTO>(dish);
 
-            dishDTO.TotalCalories = dish.GetGlobalCalories();
-            dishDTO.TotalFats = dish.GetGlobalFats();
-            dishDTO.TotalProteins = dish.GetGlobalProteins();
-            dishDTO.TotalCarbohydrates = dish.GetGlobalCarbohydrates();
+            // Let's get data about products in current dish and add it to our `Details` page
+            var products = _context.Products.ToList();
+            // Let's extract all products IDs from our DishProduct
+            var dishProductIds = dish.DishProducts.Select(dp => dp.ProductId).ToHashSet();
+
+            List<string> productNames = new List<string>(); // List to store temporary our products
+            foreach (var pr in products)
+            {
+                if (dishProductIds.Contains(pr.Id))
+                {
+                    productNames.Add(pr.Name);
+                }
+            }
+            ViewBag.ProductNames = productNames;
+
 
             return View(dishDTO);
         }

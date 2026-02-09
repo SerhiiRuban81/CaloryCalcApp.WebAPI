@@ -41,6 +41,16 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.TotalProteins)
         </dd>
+        <dt class="col-sm-2">
+            Products
+        </dt>
+        <dd class="col-sm-10">            
+            @{
+                var products = ViewBag.ProductNames as List<string>;
+                string productsDisplay = products != null ? string.Join(", ", products) : "";
+            }
+            @productsDisplay
+        </dd>
     </dl>
 </div>
 <div>

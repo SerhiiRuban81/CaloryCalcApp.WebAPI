@@ -1,19 +1,20 @@
 ﻿using AutoMapper;
 using CaloryCalcApp.WebAPI.Data;
+using CaloryCalcApp.WebAPI.Models.DTOs.Dishes;
 using CaloryCalcApp.WebAPI.Models.DTOs.Products;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using X.PagedList.Mvc;
-using X.PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using X.PagedList.Extensions;
 using X.PagedList;
+using X.PagedList.Extensions;
+using X.PagedList.Mvc;
+
 
 namespace CaloryCalcApp.WebAPI.Controllers
 {
@@ -35,7 +36,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         //    return View(await _context.Products.ToListAsync());
         //}
 
-        // Modified Index action to support pagination
+        // Modified Index action with pagination support 
         public ActionResult Index(int page = 1, int pageSize = 10, int? oldPageSize = null)
         {
             if (oldPageSize.HasValue && oldPageSize.Value != pageSize)
@@ -46,7 +47,8 @@ namespace CaloryCalcApp.WebAPI.Controllers
 
             var products = _context.Products.OrderBy(p => p.Id);
 
-            var pagedProducts = products.ToPagedList(page, pageSize);
+            var productsDTO = _mapper.Map<List<ProductDTO>>(products);
+            var pagedProducts = productsDTO.ToPagedList(page, pageSize);
 
             ViewBag.PageSize = pageSize;
             ViewBag.Page = page;
