@@ -1,0 +1,145 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model CaloryCalcApp.WebAPI.Models.ViewModels.Search.SearchViewModel
+
+<form>
+    <h2>Search results</h2>
+    @{
+        if (Model.SearchType == "Product")
+        {
+            <h2>Products</h2>
+            <h2>
+                found for the item `@Html.Raw(Model.SearchText)`
+            </h2>
+            @if (Model.ProductsFound.Any())
+            {
+                <h3>Products</h3>
+                // <ul>
+                //     @foreach (var product in Model.ProductsFound)
+                //     {
+                //         <li>@product.Name</li>
+                //     }
+                // </ul>                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Product name
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in Model.ProductsFound)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => product.Name)
+                                </td>
+                                <td>
+                                    <a asp-controller="Products" asp-action="Edit" asp-route-id="@product.Id">Edit</a> |
+                                    <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id">Details</a> |
+                                    <a asp-controller="Products" asp-action="Delete" asp-route-id="@product.Id">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h2>No products `@Html.Raw(Model.SearchText)` were found.</h2>
+            }
+        }
+        else if (Model.SearchType == "Dish")
+        {
+            <h2>Dishes</h2>
+            <h2>
+                found for the item `@Html.Raw(ViewBag.SearchText)`
+            </h2>
+            @if (Model.DishesFound.Any())
+            {
+                <h3>Dishes</h3>
+                <ul>
+                    @foreach (var dish in Model.DishesFound)
+                    {
+                        <li>@dish.Name</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <h2>No dishes `@Html.Raw(Model.SearchText)` were found.</h2>
+            }
+        }
+        else if (Model.SearchType == "User")
+        {
+            <h2>Users</h2>
+            <h2>
+                found for the item `@Html.Raw(ViewBag.SearchText)`
+            </h2>
+            @if (Model.UsersFound.Any())
+            {
+                <h3>Users</h3>
+                <ul>
+                    @foreach (var user in Model.UsersFound)
+                    {
+                        <li>@user.UserName</li>
+                    }
+                </ul>
+            }
+        }
+        else if (Model.SearchType == "FullSearch")
+        {
+            <h2>
+                For the @Html.Raw(ViewBag.SearchText) found following data:
+            </h2>
+
+            @if (Model.ProductsFound.Any())
+            {
+                <h3>Products</h3>
+                <ul>
+                    @foreach (var product in Model.ProductsFound)
+                    {
+                        <li>@product.Name</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <h2>No users `@Html.Raw(Model.SearchText)` were found.</h2>
+            }
+
+            @if (Model.DishesFound.Any())
+            {
+                <h3>Dishes</h3>
+                <ul>
+                    @foreach (var dish in Model.DishesFound)
+                    {
+                        <li>@dish.Name</li>
+                    }
+                </ul>
+            }
+
+            @if (Model.UsersFound.Any())
+            {
+                <h3>Users</h3>
+                <ul>
+                    @foreach (var user in Model.UsersFound)
+                    {
+                        <li>@user.UserName</li>
+                    }
+                </ul>
+            }
+        }
+    }
+    @* <select name="entityType" class="form-select" aria-label="Select Entity">
+        @foreach (var item in Model.EntityTypes)
+        {
+            <option value="@item.Value" selected="@(item.Value == Model.SelectedEntityType ? "selected" : null)">
+                @item.Text
+            </option>
+        }
+    </select> *@
+</form>

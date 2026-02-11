@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="16.0.0" />
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="4.0.40804" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.23" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.23">

@@ -1,5 +1,4 @@
 ﻿<!DOCTYPE html>
-
 <html>
 <head>
     <meta charset="utf-8">
@@ -48,9 +47,20 @@
 
 
                 </ul>
-                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                    <input type="search" class="form-control form-control-dark text-bg-light" placeholder="Search..." aria-label="Search">
+                <form asp-controller="Search" asp-action="Search" method="post" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <input type="search" name="SearchText" class="form-control" placeholder="Search..." aria-label="Search" />
+                        <select id="SearchType" name="SearchType" aria-label="Select Entity" class="form-select">
+                            <option value="Product">Product</option>
+                            <option value="Dish">Dish</option>
+                            <option value="User">User</option>
+                            <option value="FullSearch">Full search</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    }
                 </form>
+                
                 <div class="text-end me-lg-3">
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
