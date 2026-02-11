@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
 using CaloryCalcApp.WebAPI.Data;
+using CaloryCalcApp.WebAPI.Models.DTOs.Dishes;
+using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers;
+using CaloryCalcApp.WebAPI.Models.DTOs.Products;
 using CaloryCalcApp.WebAPI.Models.ViewModels.Search;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Authorization;
@@ -44,12 +47,14 @@ namespace CaloryCalcApp.WebAPI.Controllers
                     if(model.SearchType == "Product" || model.SearchType == "FullSearch")
                     {
                         // Let's choouse products where `Name` contains symbols from our search
-                        model.ProductsFound = await _context.Products.Where(p => p.Name.Contains(model.SearchText)).OrderBy(p => p.Id).ToListAsync();
+                        var pf = await _context.Products.Where(p => p.Name.Contains(model.SearchText)).OrderBy(p => p.Id).ToListAsync();
+                        model.ProductsFound = _mapper.Map<List<ProductDTO>>(pf);
                     }
                     if (model.SearchType == "Dish" || model.SearchType == "FullSearch")
                     {
                         // Let's choouse dishes where `Name` contains symbols from our search
-                        model.DishesFound = await _context.Dishes.Where(p => p.Name.Contains(model.SearchText)).OrderBy(p => p.Id).ToListAsync();
+                        var df = await _context.Dishes.Where(p => p.Name.Contains(model.SearchText)).OrderBy(p => p.Id).ToListAsync();
+                        model.DishesFound = _mapper.Map<List<DishDTO>>(df);
                     }
                     if (model.SearchType == "User" || model.SearchType == "FullSearch")
                     {
