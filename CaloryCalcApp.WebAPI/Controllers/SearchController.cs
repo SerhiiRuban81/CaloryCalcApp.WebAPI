@@ -35,6 +35,56 @@ namespace CaloryCalcApp.WebAPI.Controllers
             return View("_Search");
         }
 
+
+        [HttpGet]
+        public async Task<ActionResult> Search(string searchText, string searchType, int productPage = 1, int dishPage = 1, int userPage = 1)
+        {
+            var model = new SearchViewModel
+            {
+                SearchText = searchText,
+                SearchType = searchType
+            };
+
+            if (!string.IsNullOrEmpty(searchText) && !string.IsNullOrEmpty(searchType))
+            {
+                if (searchType == "Product" || searchType == "FullSearch")
+                {
+                    var pf = await _context.Products
+                        .Where(p => p.Name.Contains(searchText))
+                        .OrderBy(p => p.Id)
+                        .ToListAsync();
+
+                    model.ProductsFound = _mapper.Map<List<ProductDTO>>(pf);
+                }
+
+                if (searchType == "Dish" || searchType == "FullSearch")
+                {
+                    var df = await _context.Dishes
+                        .Where(p => p.Name.Contains(searchText))
+                        .OrderBy(p => p.Id)
+                        .ToListAsync();
+
+                    model.DishesFound = _mapper.Map<List<DishDTO>>(df);
+                }
+
+                if (searchType == "User" || searchType == "FullSearch")
+                {
+                    model.UsersFound = await _userManager.Users
+                        .Where(p => p.UserName.Contains(searchText))
+                        .OrderBy(p => p.Id)
+                        .ToListAsync();
+                }
+            }
+
+            ViewBag.ProductPage = productPage;
+            ViewBag.DishPage = dishPage;
+            ViewBag.UserPage = userPage;
+
+            return View("_Search", model);
+        }
+
+
+
         // POST: Search
         [HttpPost]
         public async Task<ActionResult> Search(SearchViewModel model)
@@ -44,7 +94,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
             {
                 if (model.SearchText != null && model.SearchType != null)
                 {
-                    if(model.SearchType == "Product" || model.SearchType == "FullSearch")
+                    if (model.SearchType == "Product" || model.SearchType == "FullSearch")
                     {
                         // Let's choouse products where `Name` contains symbols from our search
                         var pf = await _context.Products.Where(p => p.Name.Contains(model.SearchText)).OrderBy(p => p.Id).ToListAsync();
@@ -63,7 +113,6 @@ namespace CaloryCalcApp.WebAPI.Controllers
                     }
                 }
             }
-
             // Example: redirect to a results page
             return View("_Search", model);
         }

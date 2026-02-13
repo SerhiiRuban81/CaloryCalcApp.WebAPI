@@ -10,6 +10,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using X.PagedList;
+using X.PagedList.Extensions;
+using X.PagedList.Mvc;
+
+using System.ComponentModel.DataAnnotations; // this and next using were added to get `Dish name` label from Dish.cs
+using System.Reflection;
+
 
 namespace CaloryCalcApp.WebAPI.Controllers
 {
@@ -26,10 +33,38 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
 
         // GET: HealthyUserDishes
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index()
+        //{
+        //    var caloriesContext = _context.HealthyUserDishes.Include(h => h.Dish).Include(h => h.HealthyUser);
+        //    return View(await caloriesContext.ToListAsync());
+        //}
+
+        // Modified Index action with pagination support
+        public async Task<ActionResult> Index(int page = 1, int pageSize = 10, int? oldPageSize = null)
         {
-            var caloriesContext = _context.HealthyUserDishes.Include(h => h.Dish).Include(h => h.HealthyUser);
-            return View(await caloriesContext.ToListAsync());
+            if (oldPageSize.HasValue && oldPageSize.Value != pageSize)
+            {
+                int firstItemIndex = (page - 1) * oldPageSize.Value;
+                page = firstItemIndex / pageSize + 1;
+            }
+            
+
+            // Let's get label from Dish.cs class to sign our table:
+            var dishNameProperty = typeof(Dish).GetProperty("Name");
+            var dishNameDisplayAttribute = dishNameProperty.GetCustomAttribute<DisplayAttribute>();
+            ViewBag.DishNameLabel = dishNameDisplayAttribute != null ? dishNameDisplayAttribute.Name : "Dish Name";
+
+
+            var healthyUserDishes = _context.HealthyUserDishes
+                .Include(h => h.Dish)
+                .Include(h => h.HealthyUser)
+                .OrderBy(h => h.Id);
+            var healthyUserDishesDTO = _mapper.Map<List<HealthyUserDishDTO>>(healthyUserDishes);
+            var pagedHealthyUserDishes = healthyUserDishesDTO.ToPagedList(page, pageSize);
+            ViewBag.DishNames = _context.Dishes.ToDictionary(d => d.Id, d => d.Name);
+            ViewBag.PageSize = pageSize;
+            ViewBag.Page = page;
+            return View(pagedHealthyUserDishes);
         }
 
         // GET: HealthyUserDishes/Details/5

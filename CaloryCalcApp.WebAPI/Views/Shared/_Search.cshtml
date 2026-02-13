@@ -1,4 +1,7 @@
-﻿@*
+﻿@using Azure.Core
+@using CaloryCalcApp.WebAPI.Models.ViewModels.Search
+@using Microsoft.AspNetCore.Http.Extensions
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @model CaloryCalcApp.WebAPI.Models.ViewModels.Search.SearchViewModel
@@ -15,85 +18,100 @@
             @if (Model.ProductsFound.Any())
             {
                 <h3>Products</h3>
-                // <ul>
-                //     @foreach (var product in Model.ProductsFound)
-                //     {
-                //         <li>@product.Name</li>
-                //     }
-                // </ul>                
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>
-                                Product name
-                            </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var product in Model.ProductsFound)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => product.Name)
-                                </td>
-                                <td>
-                                    <a asp-controller="Products" asp-action="Edit" asp-route-id="@product.Id">Edit</a> |
-                                    <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id">Details</a> |
-                                    <a asp-controller="Products" asp-action="Delete" asp-route-id="@product.Id">Delete</a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                // Version with PaginationHelperSearch
+                int productPage = ViewBag.ProductPage is int p ? p : 1;
+                
+                string tableHtml = PaginationHelperSearch.RenderPagination(
+                list: Model.ProductsFound,
+                caption1: "Name",
+                caption2: "Actions",
+                valueSelector1: item => item.Name,
+                valueSelector2: item => $"<a href='/Products/Edit/{item.Id}'>Edit</a> <a href='/Products/Details/{item.Id}'>Details</a> <a href='/Products/Delete/{item.Id}'>Delete</a>",
+                currentPage: productPage,
+                pageSize: 10,
+				searchText: Model.SearchText,
+				searchType: Model.SearchType,
+                pageParameterName: "productPage"
+            );
+                @Html.Raw(tableHtml)
             }
             else
             {
                 <h2>No products `@Html.Raw(Model.SearchText)` were found.</h2>
             }
         }
+        ///////////////////////////////////////////////
+        ///   DISH
+        ///////////////////////////////////////////////
         else if (Model.SearchType == "Dish")
         {
-            <h2>Dishes</h2>
-            <h2>
-                found for the item `@Html.Raw(ViewBag.SearchText)`
+            <h2>Dishes found for the `@Html.Raw(Model.SearchText)`
             </h2>
             @if (Model.DishesFound.Any())
             {
-                <h3>Dishes</h3>
-                <ul>
-                    @foreach (var dish in Model.DishesFound)
-                    {
-                        <li>@dish.Name</li>
-                    }
-                </ul>
+                // Using PaginationHelperSearch
+                int dishPage = ViewBag.DishPage is int d ? d : 1;
+                string tableHtml = PaginationHelperSearch.RenderPagination(
+                    list: Model.DishesFound,
+                    caption1: "Name",
+                    caption2: "Actions",
+                    valueSelector1: item => item.Name,
+                    valueSelector2: item => $"<a href='/Dishes/Edit/{item.Id}'>Edit</a> <a href='/Dishes/Details/{item.Id}'>Details</a> <a href='/Dishes/Delete/{item.Id}'>Delete</a>",
+                    currentPage: dishPage,
+                    pageSize: 10,
+                    searchText: Model.SearchText,
+                    searchType: Model.SearchType,
+                    pageParameterName: "dishPage"
+                );
+                @Html.Raw(tableHtml)
             }
             else
             {
                 <h2>No dishes `@Html.Raw(Model.SearchText)` were found.</h2>
             }
         }
+
+	    // Lower part is under construction need to implement controller actions and views for users
+        // 
+        /*
         else if (Model.SearchType == "User")
         {
             <h2>Users</h2>
             <h2>
-                found for the item `@Html.Raw(ViewBag.SearchText)`
+                found for the item `@Html.Raw(Model.SearchText)`
             </h2>
             @if (Model.UsersFound.Any())
             {
-                <h3>Users</h3>
-                <ul>
-                    @foreach (var user in Model.UsersFound)
-                    {
-                        <li>@user.UserName</li>
-                    }
-                </ul>
+                // Using PaginationHelperSearch
+                int userPage = ViewBag.UserPage is int d ? d : 1;
+                string tableHtml = PaginationHelperSearch.RenderPagination(
+                list: Model.UsersFound,
+                caption1: "Name",
+                caption2: "Actions",
+                valueSelector1: item => item.UserName,
+                valueSelector2: item => $"<a href='/Users/Edit/{item.Id}'>Edit</a> <a href='/Users/Details/{item.Id}'>Details</a> <a href='/Users/Delete/{item.Id}'>Delete</a>",
+                currentPage: userPage,
+                pageSize: 10,
+                searchText: Model.SearchText,
+                searchType: Model.SearchType,
+                pageParameterName: "userPage"
+                );
+                @Html.Raw(tableHtml)
+
+				// Old version without pagination
+                // <h3>Users</h3>
+                // <ul>
+                //     @foreach (var user in Model.UsersFound)
+                //     {
+                //         <li>@user.UserName</li>
+                //     }
+                // </ul>
             }
         }
         else if (Model.SearchType == "FullSearch")
         {
             <h2>
-                For the @Html.Raw(ViewBag.SearchText) found following data:
+                For the @Html.Raw(Model.SearchText) found following data:
             </h2>
 
             @if (Model.ProductsFound.Any())
@@ -132,14 +150,6 @@
                     }
                 </ul>
             }
-        }
-    }
-    @* <select name="entityType" class="form-select" aria-label="Select Entity">
-        @foreach (var item in Model.EntityTypes)
-        {
-            <option value="@item.Value" selected="@(item.Value == Model.SelectedEntityType ? "selected" : null)">
-                @item.Text
-            </option>
-        }
-    </select> *@
+        }*/
+    } 
 </form>

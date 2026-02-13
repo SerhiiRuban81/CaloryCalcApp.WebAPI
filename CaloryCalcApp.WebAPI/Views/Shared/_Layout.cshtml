@@ -50,14 +50,49 @@
                 <form asp-controller="Search" asp-action="Search" method="post" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
-                        <input type="search" name="SearchText" class="form-control" placeholder="Search..." aria-label="Search" />
+                        <div class="row g-2 align-items-center">
+
+                            <!-- Search text -->
+                            <div class="col-md-5">
+                                <input type="search"
+                                       name="SearchText"
+                                       class="form-control form-control-lg"
+                                       placeholder="Search..."
+                                       aria-label="Search" />
+                            </div>
+
+                            <!-- Search type dropdown -->
+                            <div class="col-md-4">
+                                <select id="SearchType"
+                                        name="SearchType"
+                                        class="form-select form-select-lg">
+                                    <option value="Product">Product</option>
+                                    <option value="Dish">Dish</option>
+                                    @* Commented below part is under construction *@
+                                    @* <option value="User">User</option>
+                                     <option value="FullSearch">Full search</option> *@
+                                </select>
+                            </div>
+
+                            <!-- Search button -->
+                            <div class="col-md-1 d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    Search
+                                </button>
+                            </div>
+
+                        </div>
+
+                        // Version below is before implementing more beautiful, temporary spare
+                        /*<input type="search" name="SearchText" class="form-control" placeholder="Search..." aria-label="Search" />
                         <select id="SearchType" name="SearchType" aria-label="Select Entity" class="form-select">
                             <option value="Product">Product</option>
                             <option value="Dish">Dish</option>
-                            <option value="User">User</option>
-                            <option value="FullSearch">Full search</option>
+                            @* Commented part below is under construction *@
+                            @* <option value="User">User</option>
+                            <option value="FullSearch">Full search</option> *@
                         </select>
-                        <button type="submit" class="btn btn-primary">Search</button>
+                        <button type="submit" class="btn btn-primary">Search</button>*/
                     }
                 </form>
                 
