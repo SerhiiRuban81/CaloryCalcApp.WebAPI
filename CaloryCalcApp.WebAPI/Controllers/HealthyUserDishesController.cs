@@ -5,17 +5,18 @@ using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations; // this and next using were added to get `Dish name` label from Dish.cs
 using System.Linq;
+using System.Reflection;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using X.PagedList;
 using X.PagedList.Extensions;
 using X.PagedList.Mvc;
-
-using System.ComponentModel.DataAnnotations; // this and next using were added to get `Dish name` label from Dish.cs
-using System.Reflection;
 
 
 namespace CaloryCalcApp.WebAPI.Controllers
@@ -90,8 +91,13 @@ namespace CaloryCalcApp.WebAPI.Controllers
         // GET: HealthyUserDishes/Create
         public IActionResult Create()
         {
+            // Let's get Id of our current User
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            ViewBag.CurrentUserId = userId; // Passing Id of current User to our Razor page to set it as default value for HealthyUserId field in Create form
+
             ViewData["DishId"] = new SelectList(_context.Dishes, "Id", "Name");
-            ViewData["HealthyUserId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["HealthyUserId"] = new SelectList(_context.Users, "Id", "Id", userId);
+            
             return View();
         }
 
@@ -205,6 +211,76 @@ namespace CaloryCalcApp.WebAPI.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> Statistics(int days = 7)
+        {
+            // Let's define options for our time dropdown list on Razor page:
+            var timeOptions = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "24 hours" },
+                new SelectListItem { Value = "7", Text = "7 days" },
+                new SelectListItem { Value = "30", Text = "30 days" },
+                new SelectListItem { Value = "90", Text = "90 days" },
+                new SelectListItem { Value = "180", Text = "180 days" },
+                new SelectListItem { Value = "365", Text = "365 days" },
+                new SelectListItem { Value = "0", Text = "All recorded time" }
+            };
+
+            // Passing our time options to Razor page:
+            ViewBag.TimeOptions = timeOptions;
+
+            ViewBag.SelectedDays = days.ToString(); // Passing selected time option to Razor page to set it as default value in dropdown list
+
+            // Let's get Id of current user:
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            // Getting our dishes, belonging to the current User
+            var userId1 = User.FindFirstValue(ClaimTypes.NameIdentifier); 
+            Console.WriteLine("UserId = " + userId1);
+            List<HealthyUserDish> healthyUserDishes;
+            // Let's get dishes, consumed by User during selected time period. If "All recorded time" option is selected, we will get all dishes, consumed by User based of choosen time
+            if (days != 0)
+            {
+                //Console.WriteLine("Selected time period: Last " + days + " days");
+                healthyUserDishes = await _context.HealthyUserDishes
+                .Include(h => h.Dish)
+                .ThenInclude(d => d.DishProducts).
+                ThenInclude(dp => dp.Product)
+                .Where(h => h.HealthyUserId == userId && h.MealTime >= DateTime.Now.AddDays(-days))
+                .ToListAsync();
+            }
+            else
+            {
+                //Console.WriteLine("Selected time period: All recorded time");
+                healthyUserDishes = await _context.HealthyUserDishes
+                .Include(h => h.Dish)
+                .Where(h => h.HealthyUserId == userId)
+                .ToListAsync();
+            }
+
+            // Mapping our dishes to DTO before transferring to razor page
+            var healthyUserDishesDTO = _mapper.Map<List<HealthyUserDishDTO>>(healthyUserDishes);
+            // Getting Id's of User's dishes
+            var usedDishIds = healthyUserDishesDTO.Select(x => x.DishId).Distinct().ToList();
+            // Getting dishes names, belonging to our Users
+            var dishNames = await _context.Dishes.Where(d => usedDishIds.Contains(d.Id)).ToDictionaryAsync(d => d.Id, d => d.Name);
+            // Getting dish calories for each User's dish and calculating total calories for each dish based on consumed amount of the dish by User
+            var dishCalories = new Dictionary<DateTime, double>(); // Our dictionary to store data in format <MealTime, TotalCaloriesConsumed>
+            foreach (var d in healthyUserDishes)
+            {
+                double? globalCalories = d.Dish.GetGlobalCalories(); // calories per 100g
+                double totalCalories = (globalCalories ?? 0) / 100 * d.Amount;
+                dishCalories[d.MealTime] = totalCalories;
+            }
+
+            ViewBag.DishCalories = dishCalories;
+
+            // Returning ViewBag with dishes names fro further using on our Razor page
+            ViewBag.DishNames = dishNames;
+            return View(healthyUserDishesDTO);
+        }
+
+        // Function to check if a HealthyUserDish with a given Id exists in the database
         private bool HealthyUserDishExists(int id)
         {
             return _context.HealthyUserDishes.Any(e => e.Id == id);

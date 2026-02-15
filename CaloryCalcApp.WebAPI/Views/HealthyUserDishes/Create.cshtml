@@ -23,9 +23,10 @@
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
 			@* Приховано. Можна додати, якщо потрібна можливість вибору користувача при створенні страви для користувача (тобто записати страву комусь, наприклад дитині, не заходячи в інший акаунт). *@
-            <div class="form-group" style="display:none;">
+            @* <div class="form-group"> *@
+            <div class="form-group" style="display:none;">            
                 <label asp-for="HealthyUserId" class="control-label"></label>
-                <select asp-for="HealthyUserId" class ="form-control" asp-items="ViewBag.HealthyUserId"></select>
+                <select asp-for="HealthyUserId" class="form-control" asp-items="ViewBag.HealthyUserId" asp-route-Value="@ViewBag.CurrentUserId"></select>
             </div>
             @* Hidden input for date time *@
             <input type="hidden" id="DateTimeInput" name="DateTime" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")">

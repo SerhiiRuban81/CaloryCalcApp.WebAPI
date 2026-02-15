@@ -1,0 +1,33 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model List<CaloryCalcApp.WebAPI.Models.DTOs.HealthyUserDishes.HealthyUserDishDTO>
+
+<h1>Statistics</h1>
+
+<!-- Form with dropdown -->
+<form method="get" id="timeForm">
+    <label for="daysSelect">Please select time period:</label>
+
+    <select id="daysSelect" name="days" class="form-select" onchange="document.getElementById('timeForm').submit();">
+        @foreach (var option in (List<SelectListItem>)ViewBag.TimeOptions)
+        {
+            <option value="@option.Value" selected="@(option.Value == ViewBag.SelectedDays)"> @option.Text </option>
+        }
+    </select>
+</form>
+
+@foreach (var item in Model)
+{
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">@ViewBag.DishNames[item.DishId]</h5>
+            <p class="card-text">Amount: @item.Amount</p>
+			<p class="card-text">Calories, kkal: @ViewBag.DishCalories[item.MealTime]</p>
+
+            <p class="card-text">Meal Time: @item.MealTime</p>
+        </div>
+    </div>
+}
