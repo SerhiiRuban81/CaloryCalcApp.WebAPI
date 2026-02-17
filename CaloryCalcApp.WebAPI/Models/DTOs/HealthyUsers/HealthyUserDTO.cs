@@ -4,9 +4,9 @@ namespace CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers
 {
     public class HealthyUserDTO
     {
-        public int Id { get; set; }
+        public string? Id { get; set; }
 
-        public string Name { get; set; } = default!; // Ім'я користувача
+        public string? Name { get; set; } = default!; // Ім'я користувача
 
         public double Weight { get; set; } = default!; // Вага
 

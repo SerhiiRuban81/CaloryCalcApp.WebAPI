@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using CaloryCalcApp.WebAPI.Models.DTOs.Admins;
 using CaloryCalcApp.WebAPI.Models.DTOs.Admin;
+using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers;
 
 namespace CaloryCalcApp.WebAPI.Data
 {
@@ -38,6 +39,7 @@ namespace CaloryCalcApp.WebAPI.Data
                 .UsingEntity<HealthyUserDish>(e =>
                 e.Property(c => c.MealTime).HasDefaultValueSql("GETUTCDATE()"));
         }
+        public DbSet<CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers.HealthyUserDTO> HealthyUserDTO { get; set; } = default!;
         //public DbSet<CaloryCalcApp.WebAPI.Models.DTOs.Products.ProductDTO> ProductDTO { get; set; } = default!;
         //public DbSet<CaloryCalcApp.WebAPI.Models.DTOs.Admins.RegisterUserDTO> RegisterUserDTO { get; set; } = default!;
         //public DbSet<CaloryCalcApp.WebAPI.Models.DTOs.Admin.LoginUserDTO> LoginUserDTO { get; set; } = default!;
