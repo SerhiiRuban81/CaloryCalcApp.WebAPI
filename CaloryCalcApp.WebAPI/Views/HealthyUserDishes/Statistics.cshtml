@@ -23,7 +23,47 @@
 
 <canvas id="CaloryCalcChart" width="800" height="400"></canvas>
 
-
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h4>Consumption Summary for the choosen period</h4>
+    </div>
+    <div class="card-body">
+        <h2>Summary</h2>
+        <div class="table-container rounded-3 overflow-hidden">
+            <table class="table table-striped table-bordered table-hover ">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Metric</th>
+                        <th>Total</th>
+                        <th>Average per Day</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Calories (kcal)</td>
+                        <td>@ViewBag.TotalCalories.ToString("0.###")</td>
+                        <td>@ViewBag.AverageCaloriesPerDay.ToString("0.###")</td>
+                    </tr>
+                    <tr>
+                        <td>Fats (g)</td>
+                        <td>@ViewBag.TotalFats.ToString("0.###")</td>
+                        <td>@ViewBag.AverageFatsPerDay.ToString("0.###")</td>
+                    </tr>
+                    <tr>
+                        <td>Proteins (g)</td>
+                        <td>@ViewBag.TotalProteins.ToString("0.###")</td>
+                        <td>@ViewBag.AverageProteinsPerDay.ToString("0.###")</td>
+                    </tr>
+                    <tr>
+                        <td>Carbohydrates (g)</td>
+                        <td>@ViewBag.TotalCarbohydrates.ToString("0.###")</td>
+                        <td>@ViewBag.AverageCarbohydratesPerDay.ToString("0.###")</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>        
+    </div>
+</div>
 
 
 
@@ -124,7 +164,7 @@
 
 
 
-@* Old, but working well version with cards (only for small amount of data, just for check if we receiving data). *@
+@* Old, but working well version with cards (only for small amount of data, just for check if we receiving data properly). *@
 @* @foreach (var item in Model)
 {
     <div class="card mb-3">

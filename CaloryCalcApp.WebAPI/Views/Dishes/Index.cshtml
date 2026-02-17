@@ -3,7 +3,6 @@
 @using X.PagedList.Mvc.Core
 @using Microsoft.AspNetCore.Mvc;
 
-
 @{
     ViewData["Title"] = "Index";
 }
@@ -52,16 +51,20 @@
                         @Html.DisplayFor(model => item.Name)
                     </td>
                     <td>
-                        @Html.DisplayFor(model => item.TotalCalories)
+                        @* @Html.DisplayFor(model => item.TotalCalories) *@
+                        @(item.TotalCalories.HasValue? item.TotalCalories.Value.ToString("0.###") : "")
                     </td>
                     <td>
-                        @Html.DisplayFor(model => item.TotalCarbohydrates)
+                        @* @Html.DisplayFor(model => item.TotalCarbohydrates) *@
+                        @(item.TotalCarbohydrates.HasValue? item.TotalCarbohydrates.Value.ToString("0.###") : "")
                     </td>
                     <td>
-                        @Html.DisplayFor(model => item.TotalFats)
+                        @* @Html.DisplayFor(model => item.TotalFats) *@
+                        @(item.TotalFats.HasValue? item.TotalFats.Value.ToString("0.###") : "")
                     </td>
                     <td>
-                        @Html.DisplayFor(model => item.TotalProteins)
+                        @* @Html.DisplayFor(model => item.TotalProteins) *@
+                        @(item.TotalProteins.HasValue? item.TotalProteins.Value.ToString("0.###") : "")
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

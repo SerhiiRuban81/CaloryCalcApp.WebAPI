@@ -255,8 +255,11 @@ namespace CaloryCalcApp.WebAPI.Controllers
                 //Console.WriteLine("Selected time period: All recorded time");
                 healthyUserDishes = await _context.HealthyUserDishes
                 .Include(h => h.Dish)
+                .ThenInclude(d => d.DishProducts).
+                ThenInclude(dp => dp.Product)
                 .Where(h => h.HealthyUserId == userId)
                 .ToListAsync();
+                days = (int)(DateTime.Now - healthyUserDishes.Min(h => h.MealTime)).TotalDays; // Calculate total days based on the earliest recorded meal time for the user
             }
 
             // Mapping our dishes to DTO before transferring to razor page
@@ -278,9 +281,16 @@ namespace CaloryCalcApp.WebAPI.Controllers
             // Let's pass data to ViewBag for JavaScript consumptionon our Razor page
             ViewBag.MealData = Newtonsoft.Json.JsonConvert.SerializeObject(dataPoints);
 
-
-
-
+            // Let's get total calories, fats, proteins and carbohydrates consumed by User during selected time period for displaying in summary section on Razor page
+            ViewBag.TotalCalories = dataPoints.Sum(dp => dp.TotalCalories);
+            ViewBag.TotalFats = dataPoints.Sum(dp => dp.TotalFats);
+            ViewBag.TotalProteins = dataPoints.Sum(dp => dp.TotalProteins);
+            ViewBag.TotalCarbohydrates = dataPoints.Sum(dp => dp.TotalCarbohydrates);
+            // Calculate average daily calories for the selected time period
+            ViewBag.AverageCaloriesPerDay = Math.Round(ViewBag.TotalCalories / days, 2);
+            ViewBag.AverageFatsPerDay = Math.Round(ViewBag.TotalFats / days, 2);
+            ViewBag.AverageProteinsPerDay = Math.Round(ViewBag.TotalProteins / days, 2);
+            ViewBag.AverageCarbohydratesPerDay = Math.Round(ViewBag.TotalCarbohydrates / days, 2);
 
             return View(healthyUserDishesDTO);
 
