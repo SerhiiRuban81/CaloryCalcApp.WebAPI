@@ -1,14 +1,12 @@
-import CatalogProductsDishes from "../../components/CatalogProductsDishes/CatalogProductsDishes";
-import Header from "../../layout/Header";
 import "./products.css";
+import MainPageProducts from "../../components/CatalogProducts/MainPageProducts";
 
 
 export default function Products() {
   return (
     <>
-      <Header />
       <div className="d-flex justify-content-center" id="divCatalogProductsDishes">
-        <CatalogProductsDishes />
+        <MainPageProducts />
       </div>
     </>
   );

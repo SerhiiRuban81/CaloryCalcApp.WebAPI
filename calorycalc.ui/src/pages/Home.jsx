@@ -1,11 +1,12 @@
-import Header from "../layout/Header";
+import MainPanel from "../components/NavigationMain/MainPanel";
+
 
 export default function Home() {
 
     return (
-        <>
-            <Header />
-            <p>Main station</p>
+        < >
+           <MainPanel />
         </>
+
     )
 }
