@@ -5,6 +5,7 @@ using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using System.Globalization;
 
 namespace CaloryCalcApp.WebAPI.Controllers
 {
@@ -24,7 +25,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         {
             IEnumerable<HealthyUser> healthyUsers = userManager.Users.ToList();
             IEnumerable<HealthyUserDTO> userDTOs = mapper.Map<IEnumerable<HealthyUser>, IEnumerable<HealthyUserDTO>>(healthyUsers);
-            foreach(var userDTO in userDTOs)
+            foreach (var userDTO in userDTOs)
             {
                 HealthyUser? user = healthyUsers.FirstOrDefault(u => u.Id.ToString() == userDTO.Id);
                 if (user != null)
@@ -122,5 +123,52 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
 
 
+        // For the current logged-in user
+        public async Task<IActionResult> UserDetails()
+        {            
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound("User not logged in");
+            }
+            // Map to DTO
+            HealthyUserDTO userDTO = mapper.Map<HealthyUser, HealthyUserDTO>(user);
+            userDTO.Name = user.UserName ?? "(no username)";
+
+            return View(userDTO);
+        }
+
+        public async Task<IActionResult> WeightUpdate(HealthyUserDTO userDTO, string newWeight)
+        {
+            if (string.IsNullOrWhiteSpace(newWeight))
+                return BadRequest("Weight is required");
+
+            // Normalize input: replace comma with dot to match InvariantCulture
+            var normalizedWeightStr = newWeight.Replace(',', '.');
+
+            // Parse using InvariantCulture which expects '.'
+            if (!double.TryParse(normalizedWeightStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double weightValue))
+            {
+                ModelState.AddModelError("NewWeight", "Invalid weight format");
+                return View("UserDetails", userDTO);
+            }
+
+            if (userDTO == null) return NotFound();
+
+            var user = await userManager.FindByIdAsync(userDTO.Id.ToString());
+            if (user == null) return NotFound();
+
+            if (weightValue != 0)
+            {
+                user.Weight = weightValue;
+                await userManager.UpdateAsync(user);
+                userDTO.Weight = weightValue;
+                userDTO.Name = user.UserName ?? "(no username)";
+                userDTO.Height = user.Height;
+                userDTO.DateOfBirth = user.DateOfBirth;
+            }
+
+            return View("UserDetails", userDTO);
+        }
     }
 }

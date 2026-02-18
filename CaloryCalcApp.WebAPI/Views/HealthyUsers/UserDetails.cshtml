@@ -1,0 +1,43 @@
+﻿@model CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers.HealthyUserDTO
+<h2>User Details</h2>
+
+<div class="card shadow-sm p-4 mb-3">
+    <p>Name: @Model.Name</p>
+    <p>
+        Weight: @Model.Weight kg
+        <button id="changeWeightBtn">Change Weight</button>
+    </p>
+    <div id="weightInputDiv" style="display:none;">
+        <form method="post" action="/HealthyUsers/WeightUpdate">
+            <input type="hidden" name="userDTO.Id" value="@Model.Id" />
+            <input type="text" name="NewWeight" value="@Model.Weight" />
+            <button type="submit">Save</button>
+        </form>
+    </div>
+	<p>Height: @Model.Height cm</p>
+	<p>Date of Birth: @Model.DateOfBirth.ToShortDateString()</p>
+    <br />
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form'); // or better, assign an id to your form
+            const weightInput = document.querySelector('input[name="NewWeight"]');
+            const changeBtn = document.getElementById('changeWeightBtn');
+
+            // Show input div
+            changeBtn.onclick = () => {
+                document.getElementById('weightInputDiv').style.display = 'block';
+            };
+
+            // Format input before submitting
+            // form.onsubmit = () => {
+            //     if (weightInput.value.includes('.')) {
+            //         weightInput.value = weightInput.value.replace('.', ',');
+            //     }
+            // };
+        });
+    </script>
+
+}
