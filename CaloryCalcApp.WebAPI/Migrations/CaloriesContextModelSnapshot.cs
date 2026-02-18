@@ -17,10 +17,87 @@ namespace CaloryCalcApp.WebAPI.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.19")
+                .HasAnnotation("ProductVersion", "8.0.23")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("CaloryCalcApp.WebAPI.Models.DTOs.Admins.RegisterUserDTO", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConfirmPassword")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsPersistent")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Sex")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Weight")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RegisterUserDTO");
+                });
+
+            modelBuilder.Entity("CaloryCalcApp.WebAPI.Models.DTOs.Products.ProductDTO", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double?>("Calories")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Carbohydrates")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Density")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Fats")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Proteins")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductDTO");
+                });
 
             modelBuilder.Entity("CaloryCalcLibrary.Dish", b =>
                 {
@@ -120,9 +197,8 @@ namespace CaloryCalcApp.WebAPI.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Sex")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Sex")
+                        .HasColumnType("int");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -187,23 +263,23 @@ namespace CaloryCalcApp.WebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("Calories")
+                    b.Property<double?>("Calories")
                         .HasColumnType("float");
 
-                    b.Property<double>("Carbohydrates")
+                    b.Property<double?>("Carbohydrates")
                         .HasColumnType("float");
 
-                    b.Property<double>("Density")
+                    b.Property<double?>("Density")
                         .HasColumnType("float");
 
-                    b.Property<double>("Fats")
+                    b.Property<double?>("Fats")
                         .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Proteins")
+                    b.Property<double?>("Proteins")
                         .HasColumnType("float");
 
                     b.HasKey("Id");

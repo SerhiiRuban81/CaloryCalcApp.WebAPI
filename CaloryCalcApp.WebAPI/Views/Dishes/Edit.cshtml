@@ -1,0 +1,182 @@
+﻿@model CaloryCalcLibrary.Dish
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Dish</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <h4>Products</h4>
+            <div id="productContainer">
+                @for (int i = 0; i < Model.DishProducts.Count; i++)
+                {
+                    var dp = Model.DishProducts[i];
+                    <div class="product-row mb-2 position-relative">
+                        <input type="hidden" asp-for="DishProducts[@i].ProductId" value="@dp.ProductId" />
+                        <input type="hidden" asp-for="DishProducts[@i].Id" value="@dp.Id" />
+
+                        <input type="text"
+                               class="form-control product-search"
+                               placeholder="Start typing product..."
+                               autocomplete="off"
+                               value="@dp.Product?.Name" />
+
+                        <select asp-for="DishProducts[@i].MeasurementUnit" class="form-control mb-1">
+                            <option value="g">grams</option>
+                            <option value="ml">milliliters</option>
+                            <option value="qty">quantity</option>
+                        </select>
+
+                        <input type="number" 
+                               asp-for="DishProducts[@i].Amount"
+                               class="form-control"
+                               placeholder="Amount"
+                               value="@dp.Amount"/>
+
+                        <ul class="list-group position-absolute w-100 d-none"></ul>
+
+                        <button type="button" class="btn btn-danger mt-1 removeProductBtn">Remove</button>
+                    </div>
+                }
+            </div>
+
+            <button type="button" id="addProductBtn" class="btn btn-secondary mb-3">Add Product</button>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        let productIndex = @Model.DishProducts.Count;
+        function updateProductIndexes() {
+            const rows = document.querySelectorAll("#productContainer .product-row");
+
+            rows.forEach((row, index) => {
+                const hiddenId = row.querySelector('input[name*="ProductId"]');
+                const measurementInput = row.querySelector('select[name*="MeasurementUnit"]');
+                const amount = row.querySelector('input[name*="Amount"]');
+                const idInput = row.querySelector('input[name*=".Id"]');
+
+                if (hiddenId) {
+                    hiddenId.name = `DishProducts[${index}].ProductId`;
+                }
+                if (measurementInput) {
+                    measurementInput.name = `DishProducts[${index}].MeasurementUnit`;
+                }
+                if (amount) {
+                    amount.name = `DishProducts[${index}].Amount`;
+                }
+                if (idInput) {
+                idInput.name = `DishProducts[${index}].Id`;
+                }
+            });
+
+            productIndex = rows.length;
+        }
+
+        document.getElementById("addProductBtn").addEventListener("click", function () {
+            const container = document.getElementById("productContainer");
+            const div = document.createElement("div");
+            div.className = "product-row mb-2 position-relative";
+            div.innerHTML = `
+            <input type="hidden" name="DishProducts[${productIndex}].ProductId" />
+            <input type="hidden" name="DishProducts[${productIndex}].Id" />
+            <input type="text"
+                class="form-control product-search"
+                placeholder="Start typing product..."
+                autocomplete="off" />
+            <select name="DishProducts[${productIndex}].MeasurementUnit"
+                class="form-control mb-1">
+                <option value="g">grams</option>
+                <option value="ml">milliliters</option>
+                <option value="qty">quantity</option>
+            </select>
+
+            <input type="number"
+                name="DishProducts[${productIndex}].Amount"
+                class="form-control mb-1"
+                placeholder="Amount" />
+
+            <ul class="list-group position-absolute w-100 d-none"></ul>
+            <button type="button"
+                class="btn btn-danger mt-1 removeProductBtn">
+                Remove
+            </button> `;
+            container.appendChild(div);
+            productIndex++;
+        });
+
+        document.getElementById("productContainer").addEventListener("click", function (e) {
+            if (e.target.classList.contains("removeProductBtn")) {
+                const row = e.target.closest(".product-row");
+                if (!row){
+                    return;
+                }
+                row.remove();
+                updateProductIndexes();
+            }
+        });
+
+        async function searchProducts(input) {
+            const row = input.closest(".product-row");
+            const hiddenId = row.querySelector('input[name*="ProductId"]');
+            const list = row.querySelector("ul");
+            const dishId = @Model.Id;
+            if (input.value.length < 1) {
+                list.classList.add("d-none");
+                return;
+            }
+            const response = await fetch(`/Dishes/SearchProductInDish?id=${dishId}&wordProduct=${encodeURIComponent(input.value)}`);
+            if (!response.ok) return;
+            const data = await response.json();
+            list.innerHTML = "";
+            if (!data.success || !data.products || data.products.length === 0) {
+                list.classList.add("d-none");
+                return;
+            }
+            data.products.forEach(p => {
+                const li = document.createElement("li");
+                li.className = "list-group-item list-group-item-action";
+                li.textContent = p.name;
+                li.addEventListener("click", () => {
+                    input.value = p.name;
+                    hiddenId.value = p.productId;
+                    list.classList.add("d-none");
+                });
+                list.appendChild(li);
+            });
+            list.classList.remove("d-none");
+        }
+        document.getElementById("productContainer").addEventListener("input", function (e) {
+            if (e.target.classList.contains("product-search")) {
+                searchProducts(e.target);
+            }
+        });
+        document.querySelectorAll("#productContainer .product-row .product-search").forEach(input => {
+            input.addEventListener("input", () => searchProducts(input));
+        });
+
+    </script>
+}

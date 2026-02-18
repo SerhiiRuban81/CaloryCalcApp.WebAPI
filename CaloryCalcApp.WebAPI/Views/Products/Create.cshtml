@@ -1,0 +1,59 @@
+﻿@model CaloryCalcApp.WebAPI.Models.DTOs.Products.ProductDTO;
+
+@{
+    ViewData["Title"] = "Create";
+}
+<div class="container-sm bg-white py-4 w-50 rounded-4 mt-lg-4 shadow"
+     style="min-height:50vh; margin-bottom:40px;">
+
+    <h1 class="text-center mb-4">Products</h1>
+
+    <p class="text-center mb-4">
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </p>
+    <form asp-action="Create" method="post" class="mb-3">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">Product name:</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Density" class="control-label">Density (g/mL)</label>
+                <input asp-for="Density" class="form-control" type="number" step="0.01" min="0"/>
+                <span asp-validation-for="Density" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Calories" class="control-label">Calories (in 100g or ml)</label>
+                <input asp-for="Calories" class="form-control" type="number" step="0.01" min="0" />
+                <span asp-validation-for="Calories" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Fats" class="control-label">Fats (in 100g or ml)</label>
+                <input asp-for="Fats" class="form-control" type="number" step="0.01" min="0" />
+                <span asp-validation-for="Fats" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Carbohydrates" class="control-label">Carbohydrates (in 100g or ml)</label>
+                <input asp-for="Carbohydrates" class="form-control" type="number" step="0.01" min="0" />
+                <span asp-validation-for="Carbohydrates" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Proteins" class="control-label">Proteins (in 100g or ml)</label>
+                <input asp-for="Proteins" class="form-control" type="number" step="0.01" min="0" />
+                <span asp-validation-for="Proteins" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+     </form>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

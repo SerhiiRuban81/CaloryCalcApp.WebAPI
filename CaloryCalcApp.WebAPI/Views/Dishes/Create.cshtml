@@ -1,0 +1,119 @@
+﻿@* @model CaloryCalcLibrary.Dish *@
+@model CaloryCalcApp.WebAPI.Models.DTOs.Dishes.DishDTO; // Let's use our DTO
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Dish</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            @* Container for product inputs *@
+            <div id="productContainer" class="mb-3">
+                @* Product input fields will be added here *@
+            </div>
+            @* Button to add products *@
+            <button type="button" id="addProductBtn" class=" btn-secondary">Add Product</button>            
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script>
+    document.getElementById('addProductBtn').addEventListener('click', function(){
+        var container = document.getElementById('productContainer');
+
+        var productDiv = document.createElement('div');
+        productDiv.classList.add('form-group', 'rounded', 'mb-5');
+
+    // Label for product selection
+        var productLabel = document.createElement('label');
+        productLabel.innerText = 'Product:';
+        productDiv.appendChild(productLabel);
+
+        // Create select element
+        var productSelect = document.createElement('select');
+        productSelect.name = 'Products'; // array notation for multiple products
+        productSelect.classList.add('form-control', 'mb-1');
+
+        // Add default option
+        var defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.innerText = '-- Select a product --';
+        productSelect.appendChild(defaultOption);
+
+        // Populate options with your product list
+        @if (ViewBag.Products != null)
+        {
+            @foreach (var product in ViewBag.Products)
+            {
+                <text>
+                var option = document.createElement('option');
+                option.value = '@product.Id'; // or appropriate property
+                option.innerText = '@product.Name';
+                productSelect.appendChild(option);
+                </text>
+            }
+        }
+        else
+        {
+                <p>No products available.</p>
+        }
+
+        productDiv.appendChild(productSelect);
+
+        // Label for quantity
+        var quantityLabel = document.createElement('label');
+        quantityLabel.innerText = 'Quantity:';
+        productDiv.appendChild(quantityLabel);
+
+        // Quantity input
+        var quantityInput = document.createElement('input');
+        quantityInput.type = 'number';
+        quantityInput.name = 'ProductQuantities'; // array notation
+        quantityInput.classList.add('form-control', 'mb-1');
+        productDiv.appendChild(quantityInput);
+
+		// Measurement unit input
+		var unitLabel = document.createElement('select');
+		unitLabel.name = 'MeasurementUnits';
+		unitLabel.classList.add('form-control', 'mb-1');
+		// Create options
+        var units = [
+            { value: 'g', text: 'grams'},
+            { value: 'ml', text: 'milliliters'},
+            { value: 'qty', text: 'quantity'}
+        ];
+        units.forEach(function(unit) {
+            var option = document.createElement('option');
+            option.value = unit.value;
+            option.innerText = unit.text;
+            unitLabel.appendChild(option);
+		});
+		productDiv.appendChild(unitLabel);
+
+        container.appendChild(productDiv);
+    })
+</script>
