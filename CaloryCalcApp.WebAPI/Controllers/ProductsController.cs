@@ -80,7 +80,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         {
             // Checking if the method is called
             //System.Diagnostics.Debug.WriteLine("Inside `Create` method");
-            return View();
+            return View(new ProductDTO());
         }
 
         // POST: Products/Create
@@ -130,10 +130,22 @@ namespace CaloryCalcApp.WebAPI.Controllers
             return View(product);
         }
 
-        // POST: Products/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+		[HttpGet]
+		public async Task<IActionResult> SearchProducts(string term)
+		{
+			var products = await _context.Products
+				.Where(p => p.Name.Contains(term))
+				.Select(p => new { p.Id, p.Name })
+				.Take(10)
+				.ToListAsync();
+
+			return Json(products);
+		}
+
+		// POST: Products/Edit/5
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Density,Calories,Fats,Carbohydrates,Proteins")] Product product)
         {

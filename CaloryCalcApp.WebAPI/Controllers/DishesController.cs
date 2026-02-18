@@ -7,20 +7,22 @@ using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Build.Framework;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System;
+using System.Collections.Generic;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
-using X.PagedList.Mvc;
-using X.PagedList;
-using X.PagedList.Extensions;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading.Tasks;
+using X.PagedList;
+using X.PagedList.Extensions;
+using X.PagedList.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CaloryCalcApp.WebAPI.Controllers
 {
@@ -170,7 +172,10 @@ namespace CaloryCalcApp.WebAPI.Controllers
                 return NotFound();
             }
 
-            var dish = await _context.Dishes.FindAsync(id);
+            //var dish = await _context.Dishes.FindAsync(id);
+            var dish = await _context.Dishes.Include(p => p.DishProducts)
+                .ThenInclude(dp => dp.Product)
+                .FirstOrDefaultAsync(d => d.Id == id);
             if (dish == null)
             {
                 return NotFound();
@@ -178,52 +183,61 @@ namespace CaloryCalcApp.WebAPI.Controllers
             return View(dish);
         }
 
-        // POST: Dishes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+		// POST: Dishes/Edit/5
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Dish dish)
-        {
-            if (id != dish.Id)
+		public async Task<IActionResult> Edit(int id, Dish updatedDish)
+		{
+			if (id != updatedDish.Id)
+				return NotFound();
+
+			var existingDish = await _context.Dishes
+				.Include(d => d.DishProducts)
+				.FirstOrDefaultAsync(d => d.Id == id);
+
+            if (existingDish == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(dish);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DishExists(dish.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(dish);
-        }
+			existingDish.Name = updatedDish.Name;
 
-        // GET: Dishes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+			updatedDish.DishProducts ??= new List<DishProduct>();
+
+			_context.DishProducts.RemoveRange(existingDish.DishProducts);
+
+			foreach (var dp in updatedDish.DishProducts)
+			{
+                existingDish.DishProducts.Add(new DishProduct
+				{
+					ProductId = dp.ProductId,
+					Amount = dp.Amount,
+					MeasurementUnit = dp.MeasurementUnit
+				});
+		    }
+
+			await _context.SaveChangesAsync();
+
+			return RedirectToAction(nameof(Index));
+		}
+
+		// GET: Dishes/Delete/5
+		public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var dish = await _context.Dishes
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (dish == null)
+			//var dish = await _context.Dishes
+			//    .FirstOrDefaultAsync(m => m.Id == id);
+			var dish = await _context.Dishes
+               .Include(p => p.DishProducts)
+			   .ThenInclude(dp => dp.Product)
+			   .FirstOrDefaultAsync(d => d.Id == id);
+			if (dish == null)
             {
                 return NotFound();
             }
@@ -236,10 +250,14 @@ namespace CaloryCalcApp.WebAPI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var dish = await _context.Dishes.FindAsync(id);
-            if (dish != null)
+			//var dish = await _context.Dishes.FindAsync(id);
+			var dish = await _context.Dishes
+		        .Include(d => d.DishProducts)
+		        .FirstOrDefaultAsync(d => d.Id == id);
+			if (dish != null)
             {
-                _context.Dishes.Remove(dish);
+				_context.DishProducts.RemoveRange(dish.DishProducts);
+				_context.Dishes.Remove(dish);
             }
 
             await _context.SaveChangesAsync();
@@ -250,5 +268,31 @@ namespace CaloryCalcApp.WebAPI.Controllers
         {
             return _context.Dishes.Any(e => e.Id == id);
         }
-    }
+
+
+		 //GET: Dishes/SearchProductInDish/5?wordProduct=apple
+		[HttpGet]
+        public async Task<IActionResult> SearchProductInDish(int id, string wordProduct)
+		{
+			if (string.IsNullOrWhiteSpace(wordProduct))
+				return Json(new { success = false });
+
+			var matchedProducts = await _context.Products
+				.Where(p => p.Name.Contains(wordProduct))
+				.Select(p => new
+				{
+					productId = p.Id,
+					name = p.Name
+				})
+				.ToListAsync();
+
+			return Json(new
+			{
+				success = matchedProducts.Any(),
+				products = matchedProducts
+			});
+		}
+
+
+	}
 }
