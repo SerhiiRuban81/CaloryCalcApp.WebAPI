@@ -135,40 +135,70 @@ namespace CaloryCalcApp.WebAPI.Controllers
             HealthyUserDTO userDTO = mapper.Map<HealthyUser, HealthyUserDTO>(user);
             userDTO.Name = user.UserName ?? "(no username)";
 
+            // Let's calculate Basal Metabolic Rate (BMR) by an activity factor
+            // A common formula is Mifflin-St Jeor
+            double BMR = 0;
+            if(user.Sex == Sex.Male)
+            {
+                BMR = 10 * user.Weight + 6.25 * user.Height - 5 * (DateTime.Today.Year - user.DateOfBirth.Year) + 5;
+            }
+            else if(user.Sex == Sex.Female)
+            {
+                BMR = 10 * user.Weight + 6.25 * user.Height - 5 * (DateTime.Today.Year - user.DateOfBirth.Year) - 161;
+            }
+
+            // Let's calucalte our tdee based on Activity Level:
+            var tdeeDictionary = new Dictionary<string, double>
+            {
+                { "Sedentary (little/no exercise)", BMR * 1.2 },
+                { "Lightly Active (light exercise/sports 1-3 days/week)", BMR * 1.375 },
+                { "Moderately Active (moderate exercise 3-5 days/week)", BMR * 1.55 },
+                { "Very Active (hard exercise 6-7 days/week)", BMR * 1.725 },
+                { "Super Active (very hard exercise/physical job)", BMR * 1.9 }
+            };
+
+            // Let's transfer calculated data to our RazorPage
+            ViewBag.BMR = BMR;
+            ViewBag.TDEE = tdeeDictionary;
+
+
             return View(userDTO);
         }
 
-        public async Task<IActionResult> WeightUpdate(HealthyUserDTO userDTO, string newWeight)
+        
+        // Method to update Weight of User
+        public async Task<IActionResult> WeightUpdate(string Id, string NewWeight)
         {
-            if (string.IsNullOrWhiteSpace(newWeight))
+            if (string.IsNullOrWhiteSpace(Id))
+                return BadRequest("Invalid user Id");
+            if (string.IsNullOrWhiteSpace(NewWeight))
                 return BadRequest("Weight is required");
 
-            // Normalize input: replace comma with dot to match InvariantCulture
-            var normalizedWeightStr = newWeight.Replace(',', '.');
+            // Parse weight
+            if (!double.TryParse(NewWeight.Replace(',', '.'), CultureInfo.InvariantCulture, out double weight))
+                return BadRequest("Invalid weight format");
 
-            // Parse using InvariantCulture which expects '.'
-            if (!double.TryParse(normalizedWeightStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double weightValue))
-            {
-                ModelState.AddModelError("NewWeight", "Invalid weight format");
-                return View("UserDetails", userDTO);
-            }
+            // Find user
+            var user = await userManager.FindByIdAsync(Id);
+            if (user == null)
+                return NotFound();
 
-            if (userDTO == null) return NotFound();
+            // Update weight
+            user.Weight = weight;
+            await userManager.UpdateAsync(user);
 
-            var user = await userManager.FindByIdAsync(userDTO.Id.ToString());
-            if (user == null) return NotFound();
+            // Reload the user data from database
+            var updatedUser = await userManager.FindByIdAsync(Id);
+            if (updatedUser == null)
+                return NotFound();
 
-            if (weightValue != 0)
-            {
-                user.Weight = weightValue;
-                await userManager.UpdateAsync(user);
-                userDTO.Weight = weightValue;
-                userDTO.Name = user.UserName ?? "(no username)";
-                userDTO.Height = user.Height;
-                userDTO.DateOfBirth = user.DateOfBirth;
-            }
+            // Map to DTO
+            var userDTO = mapper.Map<HealthyUser, HealthyUserDTO>(updatedUser);
+            userDTO.Name = updatedUser.UserName ?? "(no username)";
+            // Populate other properties if needed
 
-            return View("UserDetails", userDTO);
+            // Redirect to the UserDetails GET action to reload the page fully
+            return RedirectToAction("UserDetails");
         }
     }
 }

@@ -7,8 +7,6 @@ using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
-using CaloryCalcApp.WebAPI.Models.DTOs.Admins;
-using CaloryCalcApp.WebAPI.Models.DTOs.Admin;
 using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers;
 using System.Reflection.Emit;
 

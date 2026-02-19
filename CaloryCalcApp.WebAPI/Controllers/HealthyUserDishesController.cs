@@ -53,7 +53,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
 
             // Let's get label from Dish.cs class to sign our table:
             var dishNameProperty = typeof(Dish).GetProperty("Name");
-            var dishNameDisplayAttribute = dishNameProperty.GetCustomAttribute<DisplayAttribute>();
+            var dishNameDisplayAttribute = dishNameProperty?.GetCustomAttribute<DisplayAttribute>();
             ViewBag.DishNameLabel = dishNameDisplayAttribute != null ? dishNameDisplayAttribute.Name : "Dish Name";
 
 
