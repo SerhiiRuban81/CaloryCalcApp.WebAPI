@@ -60,6 +60,7 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile(new DishProfile());
     cfg.AddProfile(new HealthyUserDishProfile());
     cfg.AddProfile(new HealthyUserProfile());
+    cfg.AddProfile(new RoleProfile());
 }
 );
 
