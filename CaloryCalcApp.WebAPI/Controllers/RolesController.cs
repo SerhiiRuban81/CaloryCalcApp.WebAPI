@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
+using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers;
 using CaloryCalcApp.WebAPI.Models.DTOs.Roles;
+using CaloryCalcApp.WebAPI.Models.ViewModels.Roles;
 using CaloryCalcLibrary;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System.Linq;
 
 namespace CaloryCalcApp.WebAPI.Controllers
@@ -30,11 +34,12 @@ namespace CaloryCalcApp.WebAPI.Controllers
             return View(roleDTOs);
         }
 
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             return View();
         }
-
+        
         [HttpPost]
         public async Task<IActionResult> Create(string roleName)
         {
@@ -77,7 +82,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
             return View(roleDTO);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
@@ -98,6 +103,113 @@ namespace CaloryCalcApp.WebAPI.Controllers
             }
             var roleDTO = mapper.Map<RoleDTO>(role);
             return View(roleDTO);
+        }
+
+        // Get method to show edit form
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return RedirectToAction("Index");
+            }
+            var role = await roleManager.FindByIdAsync(id);
+            if (role == null)
+            {
+                return NotFound();
+            }
+            var roleDTO = mapper.Map<RoleDTO>(role);
+            return View(roleDTO);
+        }
+
+        // Post method to handle edit form submission
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, string name)
+        {
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(name))
+            {
+                ModelState.AddModelError("", "Role ID and name cannot be empty.");
+                return View();
+            }
+            var role = await roleManager.FindByIdAsync(id);
+            if (role == null)
+            {
+                return NotFound();
+            }
+            role.Name = name;
+            var result = await roleManager.UpdateAsync(role);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+            var roleDTO = mapper.Map<RoleDTO>(role);
+            return View(roleDTO);
+        }
+
+        // Method to change user roles
+        public async Task<IActionResult> UserList()
+        {
+            IEnumerable<HealthyUser> healthyUsers = await userManager.Users.ToListAsync();
+            IEnumerable<HealthyUserDTO> userDTOs = mapper.Map<IEnumerable<HealthyUser>, IEnumerable<HealthyUserDTO>>(healthyUsers);
+            foreach (var userDTO in userDTOs)
+            {
+                HealthyUser? user = healthyUsers.FirstOrDefault(u => u.Id.ToString() == userDTO.Id);
+                if (user != null)
+                {
+                    userDTO.Name = user.UserName ?? "(no username)"; // Setting in our DTO the UserName from IdentityUser
+                }
+            }
+            // Pagination to be done here
+            return View(userDTOs);
+        }
+
+        public async Task<IActionResult> ChangeRoles(string? id)
+        {
+            if (id == null)
+                return NotFound();
+            HealthyUser healthyUser = await userManager.FindByIdAsync(id);
+            if(healthyUser == null)
+                return NotFound();
+            var allRoles = await roleManager.Roles.ToListAsync();
+            var userRoles = await userManager.GetRolesAsync(healthyUser);
+            ChangeRolesVM vM = new ChangeRolesVM()
+            {
+                Id = healthyUser.Id,
+                Email = healthyUser.Email,
+                AllRoles = allRoles,
+                UserRoles = userRoles
+            };
+            return View(vM);
+            
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeRoles(ChangeRolesVM vM)
+        {            
+            HealthyUser? healthyUser = await userManager.FindByIdAsync(vM.Id);
+            if(healthyUser == null)
+                return NotFound();
+            var allRoles = await roleManager.Roles.ToListAsync();
+            
+            var userRoles = await userManager.GetRolesAsync(healthyUser);
+            if (ModelState.IsValid)
+            {
+                var addedRoles = vM.Roles!.Except(userRoles);
+                var deletedRoles = userRoles.Except(vM.Roles);
+                await userManager.AddToRolesAsync(healthyUser, addedRoles); // Adding new roles if any
+                await userManager.RemoveFromRolesAsync(healthyUser, deletedRoles); // Deleting old roles if any
+
+                return RedirectToAction("Index");
+            }
+            vM.AllRoles = allRoles;
+            vM.UserRoles = userRoles;
+            vM.Email = healthyUser.Email;
+            return View(vM);
         }
     }
 }

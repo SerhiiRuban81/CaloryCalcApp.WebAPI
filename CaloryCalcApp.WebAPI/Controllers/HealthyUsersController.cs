@@ -4,6 +4,7 @@ using CaloryCalcApp.WebAPI.Models.ViewModels.Users;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Globalization;
 
@@ -21,9 +22,9 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
 
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            IEnumerable<HealthyUser> healthyUsers = userManager.Users.ToList();
+            IEnumerable<HealthyUser> healthyUsers = await userManager.Users.ToListAsync();
             IEnumerable<HealthyUserDTO> userDTOs = mapper.Map<IEnumerable<HealthyUser>, IEnumerable<HealthyUserDTO>>(healthyUsers);
             foreach (var userDTO in userDTOs)
             {
