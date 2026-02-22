@@ -57,3 +57,20 @@ body {
 header {
     background-color: rgb(80, 200, 120);
 }
+
+.page-link {
+    color: #000 !important;
+    border-radius: 6px;
+    padding: 6px 12px;
+    transition: background-color .2s ease, color .2s ease;
+}
+
+.page-item.active .page-link {
+    background-color: #84f59e !important;
+    border-color: #caebd4 !important;
+    color: white !important;
+}
+
+.page-link:hover {
+    background-color: #e8f3ff !important;
+}

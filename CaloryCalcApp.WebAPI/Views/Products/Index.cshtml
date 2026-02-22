@@ -10,7 +10,7 @@
 <h1>Products</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-secondary">Create New</a>
 </p>
 
 <form method="get" asp-action="Index">
@@ -69,9 +69,15 @@
                         @Html.DisplayFor(modelItem => item.Proteins)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        @if (User.IsInRole("admin" ) || User.IsInRole("manager"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                        }
+                        | <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-light">Details</a> |
+                        @if (User.IsInRole("admin") || User.IsInRole("manager"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                        }
                     </td>
                 </tr>
             }
@@ -84,8 +90,17 @@
 <br />
 Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
 @* @Html.PagedListPager(Model, page => Url.Action("Index", new { page, pageSize = Model.PageSize })) *@
-@Html.PagedListPager(Model, page => Url.Action("Index", new { page, pageSize = Model.PageSize }))
-
+@* @Html.PagedListPager(Model, page => Url.Action("Index", new { page, pageSize = Model.PageSize })) *@
+@Html.PagedListPager(
+Model,
+page => Url.Action("Index", new { page, pageSize = Model.PageSize }),
+    new X.PagedList.Mvc.Core.PagedListRenderOptions
+    {
+        LiElementClasses = new[] { "page-item" },
+        PageClasses = new[] { "page-link" },
+        UlElementClasses = new[] { "pagination", "justify-content-center" }
+    }
+)
 
 @* Version without pagination *@
 @* <table class="table">

@@ -10,7 +10,7 @@
 <h1>Healthy User dishes</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-secondary">Create New</a>
 </p>
 
 
@@ -60,9 +60,9 @@
                         @Html.DisplayFor(modelItem => item.HealthyUserId)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-light">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
                     </td>
                 </tr>
             }
@@ -74,7 +74,16 @@
 <br />
 Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
 @* @Html.PagedListPager(Model, page => Url.Action("Index", new { page, pageSize = Model.PageSize })) *@
-@Html.PagedListPager(Model, page => Url.Action("Index", new { page, pageSize = Model.PageSize }))
+@Html.PagedListPager(
+Model,
+page => Url.Action("Index", new { page, pageSize = Model.PageSize }),
+    new X.PagedList.Mvc.Core.PagedListRenderOptions
+    {
+        LiElementClasses = new[] { "page-item" },
+        PageClasses = new[] { "page-link" },
+        UlElementClasses = new[] { "pagination", "justify-content-center" }
+    }
+)
 
 
 

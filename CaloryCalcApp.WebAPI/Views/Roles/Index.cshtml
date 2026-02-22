@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<CaloryCalcApp.WebAPI.Models.DTOs.Roles.RoleDTO>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Roles";
 }
 
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New Role</a>
+    <a asp-action="Create" class="btn btn-secondary">Create New Role</a>
 </p>
 <table class="table">
     <thead>
@@ -31,9 +31,9 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a> |
                 @* <a asp-action="Details" asp-route-id="@item.Id">Details</a> | *@
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
             </td>
         </tr>
 }
