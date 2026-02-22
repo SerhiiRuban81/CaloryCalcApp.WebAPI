@@ -1,5 +1,6 @@
 ﻿using CaloryCalcApp.WebAPI.Models.ViewModels.Claims;
 using CaloryCalcLibrary;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace CaloryCalcApp.WebAPI.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class ClaimsController : Controller
     {
         private readonly UserManager<HealthyUser> userManager;
