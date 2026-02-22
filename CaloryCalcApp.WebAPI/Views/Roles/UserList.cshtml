@@ -1,5 +1,9 @@
 ﻿@using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers
-@model IEnumerable<HealthyUserDTO>
+@* @model IEnumerable<HealthyUserDTO> *@
+@using X.PagedList.Mvc.Core
+@using Microsoft.AspNetCore.Mvc;
+
+@model X.PagedList.IPagedList<CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers.HealthyUserDTO>
 
 <div class="container mt-4">
 
@@ -9,6 +13,59 @@
     </div>
 
     <div class="table-responsive rounded-3 overflow-hidden">
+        <form method="get" asp-action="UserList">
+            <label for="pageSize">Items on page:</label>
+            <select id="pageSize" name="pageSize" onchange="this.form.submit()">
+                <option value="10" selected="@(Model.PageSize == 10 ? "selected" : null)">10</option>
+                <option value="20" selected="@(Model.PageSize == 20 ? "selected" : null)">20</option>
+                <option value="50" selected="@(Model.PageSize == 50 ? "selected" : null)">50</option>
+            </select>
+            <input type="hidden" name="oldPageSize" value="@Model.PageSize" />
+            <input type="hidden" name="page" value="@Model.PageNumber" />
+            <table class="table table-striped table-hover table-bordered align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.First().Id)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Name)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Weight)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Height)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().DateOfBirth)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Sex)</th>
+                        <th style="width: 220px;">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var shopUser in Model)
+                    {
+                        <tr>
+                            <td>@shopUser.Id</td>
+                            <td>@shopUser.Name</td>
+                            <td>@shopUser.Weight</td>
+                            <td>@shopUser.Height</td>
+                            <td>@shopUser.DateOfBirth.ToShortDateString()</td>
+                            <td>@shopUser.Sex</td>
+                            <td class="align-middle">
+                                <div class="btn-group">
+                                    <a asp-action="ChangeRoles" asp-route-id="@shopUser.Id" class="btn btn-sm btn-warning rounded-3 m-1 align-middle">Change roles</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </form>
+        @* Let's display the page numbers at the bottom *@
+        <br />
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        @* @Html.PagedListPager(Model, page => Url.Action("Index", new { page, pageSize = Model.PageSize })) *@
+        @Html.PagedListPager(Model, page => Url.Action("UserRoles", new { page, pageSize = Model.PageSize }))
+    </div>
+
+
+
+    @* Before Pagination *@
+    @* <div class="table-responsive rounded-3 overflow-hidden">
         <table class="table table-striped table-hover table-bordered align-middle">
             <thead class="table-dark">
                 <tr>
@@ -41,8 +98,7 @@
                 }
             </tbody>
         </table>
-    </div>
-
+    </div> *@
 </div>
 
 
