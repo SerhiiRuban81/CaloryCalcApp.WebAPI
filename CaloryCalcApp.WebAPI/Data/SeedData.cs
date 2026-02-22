@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using CaloryCalcLibrary;
+using Microsoft.AspNetCore.Identity;
 
 namespace CaloryCalcApp.WebAPI.Data
 {
@@ -33,7 +34,7 @@ namespace CaloryCalcApp.WebAPI.Data
                     return;
                 }
 
-                var initialProducts = new List<Product> { 
+                var initialProducts = new List<Product> {
                     new Product {
                         Name = "Raw skinless turkey fillet",
                         // Name = "Філе індички сире без шкіри",
@@ -421,6 +422,19 @@ namespace CaloryCalcApp.WebAPI.Data
 
                 //};
                 //context.Dishes.AddRange(initialDishes);
+
+
+                // Adding default roles
+                var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                string[] roles = { "admin", "user", "manager" };
+                foreach (string role in roles)
+                {
+                    if (!await roleManager.RoleExistsAsync(role))
+                    {
+                        await roleManager.CreateAsync(new IdentityRole(role));
+                    }
+                }
+
 
                 await context.SaveChangesAsync();
             }
