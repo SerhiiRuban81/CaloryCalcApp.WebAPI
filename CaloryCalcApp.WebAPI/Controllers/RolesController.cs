@@ -68,7 +68,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         {
             if (string.IsNullOrEmpty(id))
             {
-                return RedirectToAction("Index");
+                return NotFound();
             }
 
             var role = await roleManager.FindByIdAsync(id);
@@ -86,6 +86,10 @@ namespace CaloryCalcApp.WebAPI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
             var role = await roleManager.FindByIdAsync(id);
             if (role == null)
             {
