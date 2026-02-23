@@ -11,5 +11,11 @@ namespace CaloryCalcApp.WebAPI.Controllers
             ViewData["Message"] = "You are welcome to our application.";
             return View();
         }
+
+        public IActionResult About()
+        {
+            return View();
+        }
     }
+
 }

@@ -51,7 +51,7 @@
 <div>
     @if (User.IsInRole("admin") || User.IsInRole("manager"))
     {
-        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-sm btn-warning">Edit</a>
-    }|
-    <a asp-action="Index" class="btn btn-sm btn-success">Back to Product List</a>
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning me-2">Edit</a>
+    } | 
+    <a asp-action="Index" class="btn btn-success  ms-2">Back to Product List</a>
 </div>
