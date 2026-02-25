@@ -3,6 +3,7 @@ using CaloryCalcApp.WebAPI.Data;
 using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUserDishes;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp;
@@ -27,11 +28,13 @@ namespace CaloryCalcApp.WebAPI.Controllers
     {
         private readonly CaloriesContext _context;
         private readonly IMapper _mapper;
+        private readonly UserManager<HealthyUser> _userManager;
 
-        public HealthyUserDishesController(CaloriesContext context, IMapper mapper)
+        public HealthyUserDishesController(CaloriesContext context, IMapper mapper, UserManager<HealthyUser> userManager)
         {
             _context = context;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         // GET: HealthyUserDishes
@@ -56,17 +59,36 @@ namespace CaloryCalcApp.WebAPI.Controllers
             var dishNameDisplayAttribute = dishNameProperty?.GetCustomAttribute<DisplayAttribute>();
             ViewBag.DishNameLabel = dishNameDisplayAttribute != null ? dishNameDisplayAttribute.Name : "Dish Name";
 
-
-            var healthyUserDishes = _context.HealthyUserDishes
-                .Include(h => h.Dish)
-                .Include(h => h.HealthyUser)
-                .OrderBy(h => h.Id);
+            string? currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.ToString();
+            if (currentUserId == null) return NotFound();
+            var currentUser = await _userManager.FindByIdAsync(currentUserId);
+            if(currentUser == null) return NotFound();
+            var currentRoles = await _userManager.GetRolesAsync(currentUser);
+            IQueryable<HealthyUserDish> healthyUserDishes;
+            if (currentRoles.Contains("admin"))
+            {
+                healthyUserDishes = _context.HealthyUserDishes
+                    .Include(h => h.Dish)
+                    .Include(h => h.HealthyUser)
+                    .OrderBy(h => h.Id);
+                
+            }
+            else
+            {
+                healthyUserDishes = _context.HealthyUserDishes
+                    .Include(h => h.Dish)
+                    .Include(h => h.HealthyUser)
+                    .Where(h => h.HealthyUser.Id == currentUserId)
+                    .OrderBy(h => h.Id);
+            }
             var healthyUserDishesDTO = _mapper.Map<List<HealthyUserDishDTO>>(healthyUserDishes);
             var pagedHealthyUserDishes = healthyUserDishesDTO.ToPagedList(page, pageSize);
             ViewBag.DishNames = _context.Dishes.ToDictionary(d => d.Id, d => d.Name);
             ViewBag.PageSize = pageSize;
             ViewBag.Page = page;
             return View(pagedHealthyUserDishes);
+
+
         }
 
         // GET: HealthyUserDishes/Details/5
