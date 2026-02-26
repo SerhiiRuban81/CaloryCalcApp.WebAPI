@@ -37,7 +37,6 @@ namespace CaloryCalcApp.WebAPI.Controllers
 
 			return View();
 		}
-	}
      
         public IActionResult About()
         {
