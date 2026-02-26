@@ -35,9 +35,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Models\ViewModels\Home\" />
     <Folder Include="Models\ViewModels\ProductVM\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\js\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
   <ItemGroup>

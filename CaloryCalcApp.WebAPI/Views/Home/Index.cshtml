@@ -1,18 +1,34 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
     ViewData["Title"] = "Home";
+    var userId = ViewBag.UserId as string;
 }
-<h2>@ViewData["Title"].</h2>
-<h3>@ViewData["Message"]</h3>
 
-@* <h2>Statistics</h2>
-<a href="#" title="">
-    Current calories consumption</a>
-<div>
-    <a href="#" title="">Products</a>
+
+<div class="mainCOntainerNav container-fluid d-flex flex-row ">
+
+    <div style="width:20%;">
+        @await Html.PartialAsync("_LeftNavigationPanel")
+    </div>
+    <div class="mainContent bg-light d-flex justify-content-around p-4"
+         style="width:80%;">
+        <div class="d-flex flex-column ">
+            @await Html.PartialAsync("_RecordFood")
+        </div>
+        <div class="d-flex flex-column ">
+            @await Html.PartialAsync("_RecordDrink")
+        </div>
+        <div class="d-flex flex-column ">
+            @await Html.PartialAsync("_RecordActivity")
+        </div>
+        <div class="d-flex flex-column ">
+            @await Html.PartialAsync("_RecordTheWeight", userId)
+        </div>
+        <div class="d-flex position-absolute" style="top: 50vh; width: 50vw; height: 20vh;">
+            @await Html.PartialAsync("_MenuDayOne")
+        </div>
+    </div>
+    
 </div>
-<div>
-    <a href="" title="">Dishes</a>
-</div> *@
+<div style="width:100%;height: 1px; background-color: rgb(128, 246, 150);"></div>
+
+

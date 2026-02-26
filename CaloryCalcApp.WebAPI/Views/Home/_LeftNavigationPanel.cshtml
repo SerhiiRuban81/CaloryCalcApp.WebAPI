@@ -1,0 +1,53 @@
+﻿<div class="d-flex flex-column flex-shrink-0 p-3 bg-body-tertiary"
+     style="width: 280px; min-height: 100vh;">
+
+    <a asp-controller="Home"
+       asp-action="Index"
+       class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+
+        <img src="~/images/calories_9604837.png" width="32" class="me-2" />
+        <span class="fs-4">CaloryCalc</span>
+    </a>
+
+    <hr>
+
+    <ul class="nav nav-pills flex-column mb-auto">
+
+        <li class="nav-item">
+            <a asp-controller="Ration"
+               asp-action="Index"
+               class="nav-link link-body-emphasis">
+                <img src="~/images/list.svg" width="18" class="me-2" />
+                Ration
+            </a>
+        </li>
+
+        <li>
+            <a asp-controller="HealthyUserDishes"
+               asp-action="Statistics"
+               class="nav-link link-body-emphasis">
+                <img src="~/images/chart-bars_7268541.png" width="18" class="me-2" />
+                Statistics
+            </a>
+        </li>
+
+        <li>
+            <a asp-controller="Dishes"
+               asp-action="Index"
+               class="nav-link link-body-emphasis">
+                <img src="~/images/dish_3197204.png" width="18" class="me-2" />
+                Dishes
+            </a>
+        </li>
+
+        <li>
+            <a asp-controller="Account"
+               asp-action="Index"
+               class="nav-link link-body-emphasis">
+                <img src="~/images/gear_10887995.png" width="18" class="me-2" />
+                Settings
+            </a>
+        </li>
+
+    </ul>
+</div>
