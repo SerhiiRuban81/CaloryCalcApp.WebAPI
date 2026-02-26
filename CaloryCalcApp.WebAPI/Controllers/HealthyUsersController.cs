@@ -178,40 +178,33 @@ namespace CaloryCalcApp.WebAPI.Controllers
             return View(userDTO);
         }
 
-        
-        // Method to update Weight of User
-        public async Task<IActionResult> WeightUpdate(string Id, string NewWeight)
-        {
-            if (string.IsNullOrWhiteSpace(Id))
-                return BadRequest("Invalid user Id");
-            if (string.IsNullOrWhiteSpace(NewWeight))
-                return BadRequest("Weight is required");
+		[HttpGet]
+		public async Task<IActionResult> WeightUpdate(string id)
+		{
+			if (string.IsNullOrWhiteSpace(id))
+				return BadRequest("User Id is required");
 
-            // Parse weight
-            if (!double.TryParse(NewWeight.Replace(',', '.'), CultureInfo.InvariantCulture, out double weight))
-                return BadRequest("Invalid weight format");
+			var user = await userManager.FindByIdAsync(id);
+			if (user == null)
+				return NotFound();
+			var userDTO = mapper.Map<HealthyUser, HealthyUserDTO>(user);
+			return View(userDTO); 
+		}
 
-            // Find user
-            var user = await userManager.FindByIdAsync(Id);
-            if (user == null)
-                return NotFound();
+		[HttpPost]
+		public async Task<IActionResult> WeightUpdate(HealthyUserDTO model)
+		{
+			if (model == null || string.IsNullOrWhiteSpace(model.Id))
+				return BadRequest("Invalid user Id");
 
-            // Update weight
-            user.Weight = weight;
-            await userManager.UpdateAsync(user);
+			var user = await userManager.FindByIdAsync(model.Id);
+			if (user == null)
+				return NotFound();
 
-            // Reload the user data from database
-            var updatedUser = await userManager.FindByIdAsync(Id);
-            if (updatedUser == null)
-                return NotFound();
+			user.Weight = model.Weight;
+			await userManager.UpdateAsync(user);
 
-            // Map to DTO
-            var userDTO = mapper.Map<HealthyUser, HealthyUserDTO>(updatedUser);
-            userDTO.Name = updatedUser.UserName ?? "(no username)";
-            // Populate other properties if needed
-
-            // Redirect to the UserDetails GET action to reload the page fully
-            return RedirectToAction("UserDetails");
-        }
-    }
+			return RedirectToAction("Index", "Home");
+		}
+	}
 }
