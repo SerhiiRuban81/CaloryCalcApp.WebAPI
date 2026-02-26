@@ -4,8 +4,10 @@ using CaloryCalcApp.WebAPI.Models.ViewModels.Users;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Globalization;
+using X.PagedList.Extensions;
 
 namespace CaloryCalcApp.WebAPI.Controllers
 {
@@ -21,9 +23,16 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
 
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, int? oldPageSize = null)
         {
-            IEnumerable<HealthyUser> healthyUsers = userManager.Users.ToList();
+            if (oldPageSize.HasValue && oldPageSize.Value != pageSize)
+            {
+                int firstItemIndex = (page - 1) * oldPageSize.Value;
+                page = firstItemIndex / pageSize + 1;
+            }
+            
+            IEnumerable<HealthyUser> healthyUsers = await userManager.Users.ToListAsync();
+
             IEnumerable<HealthyUserDTO> userDTOs = mapper.Map<IEnumerable<HealthyUser>, IEnumerable<HealthyUserDTO>>(healthyUsers);
             foreach (var userDTO in userDTOs)
             {
@@ -33,8 +42,12 @@ namespace CaloryCalcApp.WebAPI.Controllers
                     userDTO.Name = user.UserName ?? "(no username)"; // Setting in our DTO the UserName from IdentityUser
                 }
             }
-            // Pagination to be done here
-            return View(userDTOs);
+
+            var pagedUsers = userDTOs.ToPagedList(page, pageSize);
+            ViewBag.PageSize = pageSize;
+            ViewBag.Page = page;
+
+            return View(pagedUsers);
         }
 
         public async Task<IActionResult> Edit(string? id)

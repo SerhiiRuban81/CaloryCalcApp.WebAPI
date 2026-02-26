@@ -9,7 +9,7 @@
     <h1 class="text-center mb-4">Products</h1>
 
     <p class="text-center mb-4">
-        <a asp-action="Create" class="btn btn-primary">Create New</a>
+        <a asp-action="Create" class="btn btn-secondary">Create New</a>
     </p>
     <form asp-action="Create" method="post" class="mb-3">
             @Html.AntiForgeryToken()
@@ -51,7 +51,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-success me-2">Back to Product List</a>
 </div>
 
 @section Scripts {

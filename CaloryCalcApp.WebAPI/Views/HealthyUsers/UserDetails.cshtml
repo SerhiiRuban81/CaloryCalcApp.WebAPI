@@ -5,13 +5,13 @@
     <p>Name: @Model.Name</p>
     <p>
         Weight: @Model.Weight kg
-        <button id="changeWeightBtn" type="button">Change Weight</button>
+        <button id="changeWeightBtn" type="button" class="btn btn-secondary">Change Weight</button>
     </p>
     <div id="weightInputDiv" style="display:none;">
         <form method="post" action="/HealthyUsers/WeightUpdate">
             <input type="hidden" name="Id" value="@Model.Id" />
             <input type="text" name="NewWeight" value="@Model.Weight" />
-            <button type="submit">Save</button>
+            <button type="submit" class="btn btn-success">Save</button>
         </form>
     </div>
     <p>Height: @Model.Height cm</p>
