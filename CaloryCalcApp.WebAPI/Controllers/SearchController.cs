@@ -70,7 +70,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
                 if (searchType == "User" || searchType == "FullSearch")
                 {
                     model.UsersFound = await _userManager.Users
-                        .Where(p => p.UserName.Contains(searchText))
+                        .Where(p => p.UserName!.Contains(searchText) || p.Email!.Contains(searchText))
                         .OrderBy(p => p.Id)
                         .ToListAsync();
                 }
@@ -109,7 +109,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
                     if (model.SearchType == "User" || model.SearchType == "FullSearch")
                     {
                         // Let's choouse products where `Name` contains symbols from our search
-                        model.UsersFound = await _userManager.Users.Where(p => p.UserName.Contains(model.SearchText)).OrderBy(p => p.Id).ToListAsync();
+                        model.UsersFound = await _userManager.Users.Where(p => p.UserName!.Contains(model.SearchText) || p.Email!.Contains(model.SearchText)).OrderBy(p => p.Id).ToListAsync();
                     }
                 }
             }
