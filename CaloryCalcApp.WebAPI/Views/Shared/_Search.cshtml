@@ -9,44 +9,87 @@
 <form>
     <h2>Search results</h2>
     @{
-        if (Model.SearchType == "Product")
+        if (Model.SearchType == "Product" || Model.SearchType == "FullSearch")
         {
             <h2>Products</h2>
-            <h2>
+            <h3>
                 found for the item `@Html.Raw(Model.SearchText)`
-            </h2>
+            </h3>
             @if (Model.ProductsFound.Any())
             {
-                <h3>Products</h3>
+                // <h3>Products</h3>
+                // <table class="table">
+                //     <thead>
+                //         <tr>
+                //             <th>Name</th>
+                //             <th>Actions</th>
+                //         </tr>
+                //     </thead>
+                //     <tbody>
+                //         @foreach (var product in Model.ProductsFound)
+                //         {
+                //             <tr>
+                //                 <td>@product.Name</td>
+                //                 <td>
+                //                     <a class="btn btn-warning me-2" href="/Products/Edit/@product.Id">Edit</a>
+                //                     <a class="btn btn-sm btn-light" href="/Products/Details/@product.Id">Details</a>
+                //                     <a class="btn btn-danger ms-2" href="/Products/Delete/@product.Id">Delete</a>
+                //                 </td>
+                //             </tr>
+                //         }
+                //     </tbody>
+                // </table>
+                // <!-- Pagination controls -->
+                // <nav>
+                //     <ul class="pagination">
+                //         @for (int i = 1; i <= Math.Ceiling(Model.ProductsFound.Count() / (double)Model.PageSize); i++)
+                //         {
+                //             <li class="page-item @(i == Model.ProductPage ? "active" : "")">
+                //                 <a class="page-link" href="@Url.Action("Search", new {
+                //                     searchText = Model.SearchText,
+                //                     searchType = Model.SearchType,
+                //                     productPage = i,
+                //                     dishPage = Model.DishPage,
+                //                     userPage = Model.UserPage
+                //                 })">@i</a>
+                //             </li>
+                //         }
+                //     </ul>
+                // </nav>
+
+
+                // Working previous version
                 // Version with PaginationHelperSearch
                 int productPage = ViewBag.ProductPage is int p ? p : 1;
                 
                 string tableHtml = PaginationHelperSearch.RenderPagination(
-                list: Model.ProductsFound,
-                caption1: "Name",
-                caption2: "Actions",
-                valueSelector1: item => item.Name,
-                valueSelector2: item => $"<a href='/Products/Edit/{item.Id}'>Edit</a> <a href='/Products/Details/{item.Id}'>Details</a> <a href='/Products/Delete/{item.Id}'>Delete</a>",
-                currentPage: productPage,
-                pageSize: 10,
-				searchText: Model.SearchText,
-				searchType: Model.SearchType,
-                pageParameterName: "productPage"
-            );
+                    list: Model.ProductsFound,
+                    caption1: "Name",
+                    caption2: "Actions",
+                    valueSelector1: item => item.Name,
+                    valueSelector2: item => $"<a  class='btn btn-warning me-2' href='/Products/Edit/{item.Id}'>Edit</a> <a class='btn btn-sm btn-light' href='/Products/Details/{item.Id}'>Details</a> <a class='btn btn-danger ms-2' href='/Products/Delete/{item.Id}'>Delete</a>",
+                    currentPage: productPage,
+                    pageSize: 10,
+				    searchText: Model.SearchText,
+				    searchType: Model.SearchType,
+                    pageParameterName: "productPage"
+                );
                 @Html.Raw(tableHtml)
             }
             else
             {
-                <h2>No products `@Html.Raw(Model.SearchText)` were found.</h2>
+                <h3>No products `@Html.Raw(Model.SearchText)` were found.</h3>
             }
+            <br />
         }
         ///////////////////////////////////////////////
         ///   DISH
         ///////////////////////////////////////////////
-        else if (Model.SearchType == "Dish")
+        if (Model.SearchType == "Dish" || Model.SearchType == "FullSearch")
         {
-            <h2>Dishes found for the `@Html.Raw(Model.SearchText)`
-            </h2>
+            <h2>Dishes</h2> 
+            <h3>found for the `@Html.Raw(Model.SearchText)`
+            </h3>
             @if (Model.DishesFound.Any())
             {
                 // Using PaginationHelperSearch
@@ -56,7 +99,7 @@
                     caption1: "Name",
                     caption2: "Actions",
                     valueSelector1: item => item.Name,
-                    valueSelector2: item => $"<a href='/Dishes/Edit/{item.Id}'>Edit</a> <a href='/Dishes/Details/{item.Id}'>Details</a> <a href='/Dishes/Delete/{item.Id}'>Delete</a>",
+                valueSelector2: item => $"<a  class='btn btn-warning me-2' href='/Dishes/Edit/{item.Id}'>Edit</a> <a class='btn btn-sm btn-light' href='/Dishes/Details/{item.Id}'>Details</a> <a class='btn btn-danger ms-2' href='/Dishes/Delete/{item.Id}'>Delete</a>",
                     currentPage: dishPage,
                     pageSize: 10,
                     searchText: Model.SearchText,
@@ -67,47 +110,57 @@
             }
             else
             {
-                <h2>No dishes `@Html.Raw(Model.SearchText)` were found.</h2>
+                <h3>No dishes `@Html.Raw(Model.SearchText)` were found.</h3>
             }
+            <br />
         }
 
 	    // Lower part is under construction need to implement controller actions and views for users
-        // 
-        /*
-        else if (Model.SearchType == "User")
-        {
-            <h2>Users</h2>
-            <h2>
-                found for the item `@Html.Raw(Model.SearchText)`
-            </h2>
-            @if (Model.UsersFound.Any())
-            {
-                // Using PaginationHelperSearch
-                int userPage = ViewBag.UserPage is int d ? d : 1;
-                string tableHtml = PaginationHelperSearch.RenderPagination(
-                list: Model.UsersFound,
-                caption1: "Name",
-                caption2: "Actions",
-                valueSelector1: item => item.UserName,
-                valueSelector2: item => $"<a href='/Users/Edit/{item.Id}'>Edit</a> <a href='/Users/Details/{item.Id}'>Details</a> <a href='/Users/Delete/{item.Id}'>Delete</a>",
-                currentPage: userPage,
-                pageSize: 10,
-                searchText: Model.SearchText,
-                searchType: Model.SearchType,
-                pageParameterName: "userPage"
-                );
-                @Html.Raw(tableHtml)
+        //
 
-				// Old version without pagination
-                // <h3>Users</h3>
-                // <ul>
-                //     @foreach (var user in Model.UsersFound)
-                //     {
-                //         <li>@user.UserName</li>
-                //     }
-                // </ul>
+        @if (User.Identity != null && User.IsInRole("admin"))
+        {
+            if (Model.SearchType == "User" || Model.SearchType == "FullSearch")
+            {
+                <h2>Users</h2>
+                <h3>
+                    found for the item `@Html.Raw(Model.SearchText)`
+                </h3>
+                @if (Model.UsersFound.Any())
+                {
+                    // Using PaginationHelperSearch
+                    int userPage = ViewBag.UserPage is int d ? d : 1;
+                    string tableHtml = PaginationHelperSearch.RenderPagination(
+                    list: Model.UsersFound,
+                    caption1: "Name",
+                    caption2: "Actions",
+                    valueSelector1: item => item.UserName,
+                    valueSelector2: item => $"<a class='btn btn-warning me-2' href='/HealthyUsers/Edit/{item.Id}'>Edit</a> <a class='btn btn-danger ms-2' href='/HealthyUsers/Delete/{item.Id}'>Delete</a>",
+                    currentPage: userPage,
+                    pageSize: 10,
+                    searchText: Model.SearchText,
+                    searchType: Model.SearchType,
+                    pageParameterName: "userPage"
+                    );
+                    @Html.Raw(tableHtml)
+
+                    // Old version without pagination
+                    //             <h3>Users</h3>
+                    //             <ul>
+                    //                 @foreach (var user in Model.UsersFound)
+                    //                 {
+                    //                     <li>@user.UserName</li>
+                    //                 }
+                    //             </ul>
+                }
+                else
+                {
+                    <h3>No users `@Html.Raw(Model.SearchText)` were found.</h3>
+                }
+                <br />
             }
         }
+        /*
         else if (Model.SearchType == "FullSearch")
         {
             <h2>

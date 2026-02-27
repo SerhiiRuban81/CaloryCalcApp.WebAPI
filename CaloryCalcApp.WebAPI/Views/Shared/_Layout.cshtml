@@ -76,7 +76,7 @@
                                         class="form-select form-select-lg">
                                     <option value="Product">Product</option>
                                     <option value="Dish">Dish</option>
-                                    <!-- Search, available for Admins only-->
+                                    @* Search, available for Admins only*@
                                     @if (User.IsInRole("admin"))
                                     {
                                         <option value="User">User</option>
