@@ -1,0 +1,26 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+	ViewData["Title"] = "CreateUserClaim";
+}
+
+<h1>Claim adding</h1>
+<form asp-action="CreateUserClaim" method="post">
+	<input type="hidden" name="id" value="@Model.UserId" />
+
+	<div class="mb-3">
+		<label for="claimType" class="form-label">Claim type</label>
+		<input type="text" name="claimType" id="claimType" class="form-control" />
+	</div>
+	<div class="mb-3">
+		<label for="claimValue" class="form-label">Claim value</label>
+		<input type="text" name="claimValue" id="claimValue" class="form-control" />
+	</div>
+	<div class="mb-3">
+		<button type="submit" class="btn btn-outline-primary">Add</button>
+	</div>
+</form>
+<a asp-action="Index" asp-controller="HealthyUsers" class="btn btn-sm btn-primary">Back to Users list</a>
+
