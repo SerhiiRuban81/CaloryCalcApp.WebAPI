@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Home";
+    var userId = ViewBag.UserId as string;
+}
+
+
+<div class="mainCOntainerNav container-fluid d-flex flex-row ">
+
+    <div style="width:20%;">
+        @await Html.PartialAsync("_LeftNavigationPanel")
+    </div>
+    <div class="mainContent bg-light d-flex justify-content-around p-4"
+         style="width:80%;">
+        <div class="d-flex flex-column ">
+            @await Html.PartialAsync("_RecordFood")
+        </div>
+        <div class="d-flex flex-column ">
+            @await Html.PartialAsync("_RecordDrink")
+        </div>
+        <div class="d-flex flex-column ">
+            @await Html.PartialAsync("_RecordActivity")
+        </div>
+        <div class="d-flex flex-column ">
+            @await Html.PartialAsync("_RecordTheWeight", userId)
+        </div>
+        <div class="d-flex position-absolute" style="top: 50vh; width: 50vw; height: 20vh;">
+            @await Html.PartialAsync("_MenuDayOne")
+        </div>
+    </div>
+    
+</div>
+<div style="width:100%;height: 1px; background-color: rgb(128, 246, 150);"></div>
+
+
