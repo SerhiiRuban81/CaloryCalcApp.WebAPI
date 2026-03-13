@@ -1,7 +1,7 @@
-﻿using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers;
+using CaloryCalcApp.Web.Models.DTOs.HealthyUsers;
 using Microsoft.AspNetCore.Identity;
 
-namespace CaloryCalcApp.WebAPI.Models.ViewModels.Roles
+namespace CaloryCalcApp.Web.Models.ViewModels.Roles
 {
     public class ChangeRolesVM
     {
@@ -17,3 +17,4 @@ namespace CaloryCalcApp.WebAPI.Models.ViewModels.Roles
 
     }
 }
+

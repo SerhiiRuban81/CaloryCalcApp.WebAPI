@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace CaloryCalcApp.WebAPI.Models.DTOs.Users
+namespace CaloryCalcApp.Web.Models.DTOs.Users
 {
     public class CaloryCalcUserDTO
     {
@@ -16,3 +16,4 @@ namespace CaloryCalcApp.WebAPI.Models.DTOs.Users
 
     }
 }
+

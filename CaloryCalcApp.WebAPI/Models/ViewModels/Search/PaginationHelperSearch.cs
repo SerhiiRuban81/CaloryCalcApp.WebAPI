@@ -1,10 +1,10 @@
-﻿using CaloryCalcApp.WebAPI.Data;
-using CaloryCalcApp.WebAPI.Models.DTOs.DishProducts;
-using CaloryCalcApp.WebAPI.Models.DTOs.Products;
+using CaloryCalcApp.Web.Data;
+using CaloryCalcApp.Web.Models.DTOs.DishProducts;
+using CaloryCalcApp.Web.Models.DTOs.Products;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 
-namespace CaloryCalcApp.WebAPI.Models.ViewModels.Search
+namespace CaloryCalcApp.Web.Models.ViewModels.Search
 {
     public class PaginationHelperSearch
     {
@@ -72,3 +72,4 @@ namespace CaloryCalcApp.WebAPI.Models.ViewModels.Search
 
     }
 }
+

@@ -1,4 +1,4 @@
-﻿namespace CaloryCalcApp.WebAPI.Models.DTOs.HealthyUserDishes
+namespace CaloryCalcApp.Web.Models.DTOs.HealthyUserDishes
 {
     public class HealthyUserDishDTO
     {
@@ -13,3 +13,4 @@
         public DateTime MealTime { get; set; }
     }
 }
+

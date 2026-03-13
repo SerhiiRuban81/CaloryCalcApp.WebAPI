@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CaloryCalcApp.WebAPI.Models.DTOs.DishProducts
+namespace CaloryCalcApp.Web.Models.DTOs.DishProducts
 {
     public class DishProductDTO
     {
@@ -11,3 +11,4 @@ namespace CaloryCalcApp.WebAPI.Models.DTOs.DishProducts
         public float Amount { get; set; }
     }
 }
+

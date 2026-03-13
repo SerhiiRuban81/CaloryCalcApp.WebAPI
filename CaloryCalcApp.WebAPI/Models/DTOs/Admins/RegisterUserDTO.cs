@@ -1,8 +1,8 @@
-п»їusing CaloryCalcLibrary;
+using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace CaloryCalcApp.WebAPI.Models.DTOs.Admins
+namespace CaloryCalcApp.Web.Models.DTOs.Admins
 {
    
 
@@ -33,22 +33,23 @@ namespace CaloryCalcApp.WebAPI.Models.DTOs.Admins
 
         [Required]
         [Display(Name = "Weight")]
-        public double Weight { get; set; } = default!; // Р’Р°РіР°
+        public double Weight { get; set; } = default!; // Вага
 
         [Required]
         [Display(Name = "Height")]
-        public int Height { get; set; } = default!; // Р—СЂС–СЃС‚
+        public int Height { get; set; } = default!; // Зріст
 
         [Required]
         [Display(Name = "Date of Birth")]
-        public DateOnly DateOfBirth { get; set; } // Р”Р°С‚Р° РЅР°СЂРѕРґР¶РµРЅРЅСЏ
+        public DateOnly DateOfBirth { get; set; } // Дата народження
 
         [Required]
         [Display(Name = "Sex")]
-        public Sex Sex { get; set; } = default!; // РЎС‚Р°С‚СЊ
+        public Sex Sex { get; set; } = default!; // Стать
 
         // To remain in system or exit
         [Display(Name = "Remain in system")]
         public bool IsPersistent { get; set; } = false;
     }
 }
+

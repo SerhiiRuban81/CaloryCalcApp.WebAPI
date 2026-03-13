@@ -1,9 +1,9 @@
-﻿using AutoMapper;
-using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUserDishes;
-using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers;
+using AutoMapper;
+using CaloryCalcApp.Web.Models.DTOs.HealthyUserDishes;
+using CaloryCalcApp.Web.Models.DTOs.HealthyUsers;
 using CaloryCalcLibrary;
 
-namespace CaloryCalcApp.WebAPI.Profiles
+namespace CaloryCalcApp.Web.Profiles
 {
     public class HealthyUserDishProfile : Profile
     {
@@ -14,3 +14,4 @@ namespace CaloryCalcApp.WebAPI.Profiles
         }
     }
 }
+

@@ -1,11 +1,11 @@
-﻿
-using CaloryCalcApp.WebAPI.Models.DTOs.Dishes;
-using CaloryCalcApp.WebAPI.Models.DTOs.Products;
+
+using CaloryCalcApp.Web.Models.DTOs.Dishes;
+using CaloryCalcApp.Web.Models.DTOs.Products;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Mvc.Rendering; // for SelectListItem
 using System.Collections.Generic;
 
-namespace CaloryCalcApp.WebAPI.Models.ViewModels.Search
+namespace CaloryCalcApp.Web.Models.ViewModels.Search
 {
     public class SearchViewModel
     {
@@ -16,3 +16,4 @@ namespace CaloryCalcApp.WebAPI.Models.ViewModels.Search
         public List<HealthyUser> UsersFound { get; set; } = new List<HealthyUser>();
     }
 }
+

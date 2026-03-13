@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace CaloryCalcApp.WebAPI.Models.DTOs.Roles
+namespace CaloryCalcApp.Web.Models.DTOs.Roles
 {
     public class RoleDTO
     {
@@ -9,3 +9,4 @@ namespace CaloryCalcApp.WebAPI.Models.DTOs.Roles
         public string Name { get; set; } = default!;
     }
 }
+

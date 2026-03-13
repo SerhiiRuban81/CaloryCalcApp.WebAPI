@@ -1,39 +1,37 @@
-﻿using AutoMapper;
-using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers;
-using CaloryCalcApp.WebAPI.Models.ViewModels.Users;
+using AutoMapper;
+using CaloryCalcApp.Web.Models.DTOs.HealthyUsers;
+using CaloryCalcApp.Web.Models.ViewModels.Users;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-using System.Globalization;
 using X.PagedList.Extensions;
 
-namespace CaloryCalcApp.WebAPI.Controllers
+namespace CaloryCalcApp.Web.Controllers
 {
     public class HealthyUsersController : Controller
     {
-        private readonly UserManager<HealthyUser> userManager;
-        private readonly IMapper mapper;
+        private readonly UserManager<HealthyUser> _userManager;
+        private readonly IMapper _mapper;
 
         public HealthyUsersController(UserManager<HealthyUser> userManager, IMapper mapper)
         {
-            this.userManager = userManager;
-            this.mapper = mapper;
+            _userManager = userManager;
+            _mapper = mapper;
         }
 
 
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, int? oldPageSize = null)
+        public async Task<IActionResult> IndexAsync(int page = 1, int pageSize = 10, int? oldPageSize = null)
         {
             if (oldPageSize.HasValue && oldPageSize.Value != pageSize)
             {
                 int firstItemIndex = (page - 1) * oldPageSize.Value;
                 page = firstItemIndex / pageSize + 1;
             }
-            
-            IEnumerable<HealthyUser> healthyUsers = await userManager.Users.ToListAsync();
 
-            IEnumerable<HealthyUserDTO> userDTOs = mapper.Map<IEnumerable<HealthyUser>, IEnumerable<HealthyUserDTO>>(healthyUsers);
+            IEnumerable<HealthyUser> healthyUsers = await _userManager.Users.ToListAsync();
+
+            IEnumerable<HealthyUserDTO> userDTOs = _mapper.Map<IEnumerable<HealthyUser>, IEnumerable<HealthyUserDTO>>(healthyUsers);
             foreach (var userDTO in userDTOs)
             {
                 HealthyUser? user = healthyUsers.FirstOrDefault(u => u.Id.ToString() == userDTO.Id);
@@ -50,28 +48,28 @@ namespace CaloryCalcApp.WebAPI.Controllers
             return View(pagedUsers);
         }
 
-        public async Task<IActionResult> Edit(string? id)
+        public async Task<IActionResult> EditAsync(string? id)
         {
             if (id == null) return NotFound();
-            HealthyUser? user = await userManager.FindByIdAsync(id);
+            HealthyUser? user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
-            HealthyUserDTO userDTO = mapper.Map<HealthyUser, HealthyUserDTO>(user);
+            HealthyUserDTO userDTO = _mapper.Map<HealthyUser, HealthyUserDTO>(user);
             userDTO.Name = user.UserName ?? "(no username)"; // Setting in our DTO the UserName from IdentityUser
             return View(userDTO);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(HealthyUserDTO userDTO)
+        public async Task<IActionResult> EditAsync(HealthyUserDTO userDTO)
         {
             if (!ModelState.IsValid) return View(userDTO);
-            HealthyUser? user = await userManager.FindByIdAsync(userDTO.Id.ToString());
+            HealthyUser? user = await _userManager.FindByIdAsync(userDTO.Id.ToString());
             if (user != null)
             {
-                await userManager.SetUserNameAsync(user, userDTO.Name); // Updating the UserName using UserManager
+                await _userManager.SetUserNameAsync(user, userDTO.Name); // Updating the UserName using UserManager
                 user.Weight = userDTO.Weight;
                 user.Height = userDTO.Height;
                 user.DateOfBirth = userDTO.DateOfBirth;
-                IdentityResult result = await userManager.UpdateAsync(user);
+                IdentityResult result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index");
@@ -89,12 +87,12 @@ namespace CaloryCalcApp.WebAPI.Controllers
 
         }
 
-        public async Task<IActionResult> ChangePassword(string? id)
+        public async Task<IActionResult> ChangePasswordAsync(string? id)
         {
             if (id == null) return NotFound();
-            HealthyUser? user = await userManager.FindByIdAsync(id);
+            HealthyUser? user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound("User not found");
-            Models.ViewModels.Users.ChangePasswordVM vM = new ChangePasswordVM
+            ChangePasswordVM vM = new ChangePasswordVM
             {
                 Id = user.Id,
                 Email = user.Email
@@ -102,32 +100,32 @@ namespace CaloryCalcApp.WebAPI.Controllers
             return View(vM);
         }
         [HttpPost]
-        public async Task<IActionResult> ChangePassword(ChangePasswordVM vM)
+        public async Task<IActionResult> ChangePasswordAsync(ChangePasswordVM vM)
         {
             if (!ModelState.IsValid) return View(vM);
-            HealthyUser? user = await userManager.FindByIdAsync(vM.Id);
+            HealthyUser? user = await _userManager.FindByIdAsync(vM.Id);
             if (user == null) return NotFound("User not found");
-            var result = await userManager.ChangePasswordAsync(user, vM.OldPassword, vM.NewPassword);
+            var result = await _userManager.ChangePasswordAsync(user, vM.OldPassword, vM.NewPassword);
             if (result.Succeeded) return RedirectToAction("Index");
             foreach (var error in result.Errors)
                 ModelState.AddModelError(string.Empty, error.Description);
             return View(vM);
         }
-        public async Task<IActionResult> Delete(string? id)
+        public async Task<IActionResult> DeleteAsync(string? id)
         {
             if (id == null) return NotFound();
-            HealthyUser? email = await userManager.FindByIdAsync(id);
-            if (email == null) return NotFound("User not found");
-            HealthyUserDTO userDTO = mapper.Map<HealthyUserDTO>(email);
+            HealthyUser? user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound("User not found");
+            HealthyUserDTO userDTO = _mapper.Map<HealthyUserDTO>(user);
             return View(userDTO);
         }
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> Delete(HealthyUserDTO userDTO)
+        public async Task<IActionResult> DeleteConfirmedAsync(HealthyUserDTO userDTO)
         {
             if (userDTO == null) return NotFound();
-            HealthyUser? user = await userManager.FindByIdAsync(userDTO.Id.ToString());
+            HealthyUser? user = await _userManager.FindByIdAsync(userDTO.Id.ToString());
             if (user == null) return NotFound("User not found");
-            IdentityResult result = await userManager.DeleteAsync(user);
+            IdentityResult result = await _userManager.DeleteAsync(user);
             if (result.Succeeded) return RedirectToAction("Index");
             foreach (var error in result.Errors)
                 ModelState.AddModelError(string.Empty, error.Description);
@@ -137,15 +135,15 @@ namespace CaloryCalcApp.WebAPI.Controllers
 
 
         // For the current logged-in user
-        public async Task<IActionResult> UserDetails()
+        public async Task<IActionResult> UserDetailsAsync()
         {            
-            var user = await userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound("User not logged in");
             }
             // Map to DTO
-            HealthyUserDTO userDTO = mapper.Map<HealthyUser, HealthyUserDTO>(user);
+            HealthyUserDTO userDTO = _mapper.Map<HealthyUser, HealthyUserDTO>(user);
             userDTO.Name = user.UserName ?? "(no username)";
 
             // Let's calculate Basal Metabolic Rate (BMR) by an activity factor
@@ -179,32 +177,33 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
 
 		[HttpGet]
-		public async Task<IActionResult> WeightUpdate(string id)
+		public async Task<IActionResult> WeightUpdateAsync(string id)
 		{
 			if (string.IsNullOrWhiteSpace(id))
 				return BadRequest("User Id is required");
 
-			var user = await userManager.FindByIdAsync(id);
+			var user = await _userManager.FindByIdAsync(id);
 			if (user == null)
 				return NotFound();
-			var userDTO = mapper.Map<HealthyUser, HealthyUserDTO>(user);
+			var userDTO = _mapper.Map<HealthyUser, HealthyUserDTO>(user);
 			return View(userDTO); 
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> WeightUpdate(HealthyUserDTO model)
+		public async Task<IActionResult> WeightUpdateAsync(HealthyUserDTO model)
 		{
 			if (model == null || string.IsNullOrWhiteSpace(model.Id))
 				return BadRequest("Invalid user Id");
 
-			var user = await userManager.FindByIdAsync(model.Id);
+			var user = await _userManager.FindByIdAsync(model.Id);
 			if (user == null)
 				return NotFound();
 
 			user.Weight = model.Weight;
-			await userManager.UpdateAsync(user);
+			await _userManager.UpdateAsync(user);
 
 			return RedirectToAction("Index", "Home");
 		}
 	}
 }
+

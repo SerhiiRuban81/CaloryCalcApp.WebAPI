@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace CaloryCalcApp.WebAPI.Migrations
+namespace CaloryCalcApp.Web.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -390,3 +390,4 @@ namespace CaloryCalcApp.WebAPI.Migrations
         }
     }
 }
+

@@ -1,6 +1,6 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 
-namespace CaloryCalcApp.WebAPI.Models.ViewModels.Claims
+namespace CaloryCalcApp.Web.Models.ViewModels.Claims
 {
     public class IndexClaimsVM
     {
@@ -14,3 +14,4 @@ namespace CaloryCalcApp.WebAPI.Models.ViewModels.Claims
 
     }
 }
+

@@ -1,4 +1,4 @@
-﻿namespace CaloryCalcApp.WebAPI
+namespace CaloryCalcApp.Web
 {
     public class CalculationResult
     {
@@ -8,3 +8,4 @@
         public double? GlobalProteins { get; set; }
     }
 }
+

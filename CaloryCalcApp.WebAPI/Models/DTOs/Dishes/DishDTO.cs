@@ -1,8 +1,8 @@
-﻿using CaloryCalcApp.WebAPI.Models.DTOs.DishProducts;
+using CaloryCalcApp.Web.Models.DTOs.DishProducts;
 using CaloryCalcLibrary;
 using System.ComponentModel.DataAnnotations;
 
-namespace CaloryCalcApp.WebAPI.Models.DTOs.Dishes
+namespace CaloryCalcApp.Web.Models.DTOs.Dishes
 {
     public class DishDTO
     {
@@ -15,3 +15,4 @@ namespace CaloryCalcApp.WebAPI.Models.DTOs.Dishes
         public double? TotalCarbohydrates { get; set; }
     }
 }
+

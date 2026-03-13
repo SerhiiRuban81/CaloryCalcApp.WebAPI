@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace CaloryCalcApp.WebAPI.Models.ViewModels.Users
+namespace CaloryCalcApp.Web.Models.ViewModels.Users
 {
     public class ChangePasswordVM
     {
@@ -19,3 +19,4 @@ namespace CaloryCalcApp.WebAPI.Models.ViewModels.Users
         public string ConfirmPassword { get; set; } = default!;
     }
 }
+

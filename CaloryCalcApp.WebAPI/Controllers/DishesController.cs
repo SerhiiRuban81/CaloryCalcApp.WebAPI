@@ -1,30 +1,18 @@
-﻿using AutoMapper;
-using CaloryCalcApp.WebAPI.Data;
-using CaloryCalcApp.WebAPI.Models.DTOs.Dishes;
-using CaloryCalcApp.WebAPI.Models.DTOs.DishProducts;
-using CaloryCalcApp.WebAPI.Models.DTOs.Products;
+using AutoMapper;
+using CaloryCalcApp.Web.Data;
+using CaloryCalcApp.Web.Models.DTOs.Dishes;
+using CaloryCalcApp.Web.Models.DTOs.DishProducts;
+using CaloryCalcApp.Web.Models.DTOs.Products;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Build.Framework;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System;
 using System.Collections.Generic;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Threading.Tasks;
 using X.PagedList;
 using X.PagedList.Extensions;
-using X.PagedList.Mvc;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace CaloryCalcApp.WebAPI.Controllers
+namespace CaloryCalcApp.Web.Controllers
 {
     [Authorize]
     public class DishesController : Controller
@@ -69,7 +57,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
 
         // GET: Dishes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> DetailsAsync(int? id)
         {
             if (id == null)
             {
@@ -119,7 +107,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
+        public async Task<IActionResult> CreateAsync(
             [Bind("Id,Name")] DishDTO dishDTO,
             List<int> Products,            // list of selected product IDs
             List<int> ProductQuantities,       // list of quantities
@@ -165,7 +153,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
 
         // GET: Dishes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> EditAsync(int? id)
         {
             if (id == null)
             {
@@ -187,8 +175,8 @@ namespace CaloryCalcApp.WebAPI.Controllers
 		// To protect from overposting attacks, enable the specific properties you want to bind to.
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-        [ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id, Dish updatedDish)
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> EditAsync(int id, Dish updatedDish)
 		{
 			if (id != updatedDish.Id)
 				return NotFound();
@@ -224,7 +212,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
 		}
 
 		// GET: Dishes/Delete/5
-		public async Task<IActionResult> Delete(int? id)
+		public async Task<IActionResult> DeleteAsync(int? id)
         {
             if (id == null)
             {
@@ -248,7 +236,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         // POST: Dishes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmedAsync(int id)
         {
 			//var dish = await _context.Dishes.FindAsync(id);
 			var dish = await _context.Dishes
@@ -270,9 +258,8 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
 
 
-		 //GET: Dishes/SearchProductInDish/5?wordProduct=apple
-		[HttpGet]
-        public async Task<IActionResult> SearchProductInDish(int id, string wordProduct)
+		 [HttpGet]
+		 public async Task<IActionResult> SearchProductInDishAsync(int id, string wordProduct)
 		{
 			if (string.IsNullOrWhiteSpace(wordProduct))
 				return Json(new { success = false });
@@ -296,3 +283,4 @@ namespace CaloryCalcApp.WebAPI.Controllers
 
 	}
 }
+

@@ -1,5 +1,5 @@
-using CaloryCalcApp.WebAPI.Data;
-using CaloryCalcApp.WebAPI.Profiles;
+using CaloryCalcApp.Web.Data;
+using CaloryCalcApp.Web.Profiles;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,48 +11,26 @@ using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
 
 
-// MVC + Views
-// Add services to the container.
-// Adding Controllers with Views
 builder.Services.AddControllersWithViews();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
-
 
 string connStr = builder.Configuration.GetConnectionString("CaloriesContext")
     ?? throw new InvalidOperationException("Connection string 'CaloriesContext' not found!");
-// DB CONTEXT
+
 builder.Services.AddDbContext<CaloriesContext>(options => {
     options.UseSqlServer(connStr);
 });
 
-// Identity
 builder.Services.AddIdentity<HealthyUser, IdentityRole>()
     .AddEntityFrameworkStores<CaloriesContext>()
     .AddDefaultTokenProviders();
 
-// Customize Identity cookie
 builder.Services.ConfigureApplicationCookie(
     options => {
         options.LoginPath = "/Account/Login";
         options.AccessDeniedPath = "/Account/AccessDenied";
     });
 
-//builder.Services.AddSwaggerGen(options => {
-//    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-//    {
-//        In = ParameterLocation.Header,
-//        Type = SecuritySchemeType.ApiKey,
-//        Name = "Authorization"
-//    });
-//    options.OperationFilter<SecurityRequirementsOperationFilter>();
-//    }
-// );
-
-
-// Adding AutoMapper
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile(new ProductProfile());
@@ -64,12 +42,8 @@ builder.Services.AddAutoMapper(cfg =>
 }
 );
 
-
 var app = builder.Build();
 
-/////////////////////////////////////////
-/// LET'S INITIALIZE OUR DATABASE WITH STARTING DATA ON CREATION
-/////////////////////////////////////////
 using (IServiceScope scope = app.Services.CreateScope())
 {
     IServiceProvider serviceProvider = scope.ServiceProvider;
@@ -80,34 +54,17 @@ using (IServiceScope scope = app.Services.CreateScope())
     );
 }
 
-
-/////////////////////////////////////////
-///
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//    //app.UseExceptionHandler("/Home/Error");
-//    //app.UseHsts();
-//}
-
-
 app.UseHttpsRedirection();
-app.UseStaticFiles(); // Serve static files from wwwroot
+app.UseStaticFiles();
 
-app.UseDefaultFiles(); // Serve default files like index.html
+app.UseDefaultFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-
 
 app.MapControllers();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-
 
 app.Run();

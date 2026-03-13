@@ -1,8 +1,8 @@
-﻿using AutoMapper;
-using CaloryCalcApp.WebAPI.Models.DTOs.Roles;
+using AutoMapper;
+using CaloryCalcApp.Web.Models.DTOs.Roles;
 using Microsoft.AspNetCore.Identity;
 
-namespace CaloryCalcApp.WebAPI.Profiles
+namespace CaloryCalcApp.Web.Profiles
 {
     public class RoleProfile : Profile
     {
@@ -12,3 +12,4 @@ namespace CaloryCalcApp.WebAPI.Profiles
         }
     }
 }
+

@@ -1,21 +1,22 @@
-п»їusing CaloryCalcApp.WebAPI.Models.DTOs.Dishes;
+using CaloryCalcApp.Web.Models.DTOs.Dishes;
 
-namespace CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers
+namespace CaloryCalcApp.Web.Models.DTOs.HealthyUsers
 {
     public class HealthyUserDTO
     {
         public string? Id { get; set; }
 
-        public string? Name { get; set; } = default!; // Р†Рј'СЏ РєРѕСЂРёСЃС‚СѓРІР°С‡Р°
+        public string? Name { get; set; } = default!; // Ім'я користувача
 
-        public double Weight { get; set; } = default!; // Р’Р°РіР°
+        public double Weight { get; set; } = default!; // Вага
 
-        public int Height { get; set; } = default!; // Р—СЂС–СЃС‚
+        public int Height { get; set; } = default!; // Зріст
 
-        public DateOnly DateOfBirth { get; set; } // Р”Р°С‚Р° РЅР°СЂРѕРґР¶РµРЅРЅСЏ
+        public DateOnly DateOfBirth { get; set; } // Дата народження
 
         public string Sex { get; set; } = default!;
 
         public List<DishDTO> Dishes { get; set; } = [];
     }
 }
+

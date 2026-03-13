@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace CaloryCalcApp.WebAPI.Models.DTOs.Products
+namespace CaloryCalcApp.Web.Models.DTOs.Products
 {
     public class ProductDTO
     {
@@ -25,3 +25,4 @@ namespace CaloryCalcApp.WebAPI.Models.DTOs.Products
         public double? Proteins { get; set; }
     }
 }
+

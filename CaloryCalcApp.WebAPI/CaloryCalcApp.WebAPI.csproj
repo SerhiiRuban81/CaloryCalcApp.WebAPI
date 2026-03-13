@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>false</InvariantGlobalization>
+    <RootNamespace>CaloryCalcApp.Web</RootNamespace>
+    <AssemblyName>CaloryCalcApp.Web</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

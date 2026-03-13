@@ -1,22 +1,15 @@
-﻿using AutoMapper;
-using CaloryCalcApp.WebAPI.Data;
-using CaloryCalcApp.WebAPI.Models.DTOs.Dishes;
-using CaloryCalcApp.WebAPI.Models.DTOs.Products;
+using AutoMapper;
+using CaloryCalcApp.Web.Data;
+using CaloryCalcApp.Web.Models.DTOs.Products;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using X.PagedList;
 using X.PagedList.Extensions;
-using X.PagedList.Mvc;
 
 
-namespace CaloryCalcApp.WebAPI.Controllers
+namespace CaloryCalcApp.Web.Controllers
 {
     [Authorize]
     public class ProductsController : Controller
@@ -58,7 +51,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
 
 
         // GET: Products/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> DetailsAsync(int? id)
         {
             if (id == null)
             {
@@ -88,34 +81,20 @@ namespace CaloryCalcApp.WebAPI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Density,Calories,Fats,Carbohydrates,Proteins")] ProductDTO productDTO)
+        public async Task<IActionResult> CreateAsync([Bind("Id,Name,Density,Calories,Fats,Carbohydrates,Proteins")] ProductDTO productDTO)
         {
-            foreach (var entry in ModelState) { System.Diagnostics.Debug.WriteLine($"Here we are:" + $"{entry.Key}: {entry.Value.AttemptedValue}"); }
-            System.Diagnostics.Debug.WriteLine("POST Create HIT");
             if (ModelState.IsValid)
             {
                 Product product = _mapper.Map<Product>(productDTO);
                 _context.Add(product);
-                //System.Diagnostics.Debug.WriteLine("Creating product: " + product.Name);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                // Debug validation errors
-                foreach (var modelState in ViewData.ModelState.Values)
-                {
-                    foreach (var error in modelState.Errors)
-                    {
-                        System.Diagnostics.Debug.WriteLine(error.ErrorMessage);
-                    }
-                }
             }
             return View(productDTO);
         }
 
         // GET: Products/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> EditAsync(int? id)
         {
             if (id == null)
             {
@@ -131,7 +110,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
 
 		[HttpGet]
-		public async Task<IActionResult> SearchProducts(string term)
+		public async Task<IActionResult> SearchProductsAsync(string term)
 		{
 			var products = await _context.Products
 				.Where(p => p.Name.Contains(term))
@@ -146,8 +125,8 @@ namespace CaloryCalcApp.WebAPI.Controllers
 		// To protect from overposting attacks, enable the specific properties you want to bind to.
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Density,Calories,Fats,Carbohydrates,Proteins")] Product product)
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> EditAsync(int id, [Bind("Id,Name,Density,Calories,Fats,Carbohydrates,Proteins")] Product product)
         {
             if (id != product.Id)
             {
@@ -178,7 +157,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
 
         // GET: Products/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> DeleteAsync(int? id)
         {
             if (id == null)
             {
@@ -198,7 +177,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmedAsync(int id)
         {
             var product = await _context.Products.FindAsync(id);
             if (product != null)
@@ -216,3 +195,4 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
     }
 }
+

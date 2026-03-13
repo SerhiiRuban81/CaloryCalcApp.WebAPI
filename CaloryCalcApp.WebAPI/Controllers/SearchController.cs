@@ -1,18 +1,16 @@
-﻿using AutoMapper;
-using CaloryCalcApp.WebAPI.Data;
-using CaloryCalcApp.WebAPI.Models.DTOs.Dishes;
-using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers;
-using CaloryCalcApp.WebAPI.Models.DTOs.Products;
-using CaloryCalcApp.WebAPI.Models.ViewModels.Search;
+using AutoMapper;
+using CaloryCalcApp.Web.Data;
+using CaloryCalcApp.Web.Models.DTOs.Dishes;
+using CaloryCalcApp.Web.Models.DTOs.HealthyUsers;
+using CaloryCalcApp.Web.Models.DTOs.Products;
+using CaloryCalcApp.Web.Models.ViewModels.Search;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering; // <-- for SelectListItem
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
-namespace CaloryCalcApp.WebAPI.Controllers
+namespace CaloryCalcApp.Web.Controllers
 {
     [Authorize]
     public class SearchController : Controller
@@ -37,7 +35,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult> Search(string searchText, string searchType, int productPage = 1, int dishPage = 1, int userPage = 1)
+        public async Task<ActionResult> SearchAsync(string searchText, string searchType, int productPage = 1, int dishPage = 1, int userPage = 1)
         {
             var model = new SearchViewModel
             {
@@ -87,7 +85,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
 
         // POST: Search
         [HttpPost]
-        public async Task<ActionResult> Search(SearchViewModel model)
+        public async Task<ActionResult> SearchAsync(SearchViewModel model)
         {
             // Let's check if our `SearchText` is not empty
             if (model != null)
@@ -118,3 +116,4 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
     }
 }
+

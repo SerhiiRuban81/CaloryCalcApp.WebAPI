@@ -1,9 +1,9 @@
-﻿using AutoMapper;
-using CaloryCalcApp.WebAPI.Models.DTOs.Dishes;
+using AutoMapper;
+using CaloryCalcApp.Web.Models.DTOs.Dishes;
 using CaloryCalcLibrary;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace CaloryCalcApp.WebAPI.Profiles
+namespace CaloryCalcApp.Web.Profiles
 {
     public class DishProfile : Profile
     {
@@ -22,3 +22,4 @@ namespace CaloryCalcApp.WebAPI.Profiles
         }
     }
 }
+

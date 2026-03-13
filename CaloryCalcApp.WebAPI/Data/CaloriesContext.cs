@@ -1,17 +1,8 @@
-﻿using CaloryCalcApp.WebAPI.Models.DTOs.Admin;
-using CaloryCalcApp.WebAPI.Models.DTOs.Admins;
-using CaloryCalcApp.WebAPI.Models.DTOs.Dishes;
-using CaloryCalcApp.WebAPI.Models.DTOs.DishProducts;
-using CaloryCalcApp.WebAPI.Models.DTOs.Products;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
-using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers;
-using System.Reflection.Emit;
-using CaloryCalcApp.WebAPI.Models.DTOs.Roles;
 
-namespace CaloryCalcApp.WebAPI.Data
+namespace CaloryCalcApp.Web.Data
 {
 	public class CaloriesContext : IdentityDbContext<HealthyUser>
 	{
@@ -41,12 +32,13 @@ namespace CaloryCalcApp.WebAPI.Data
 				.UsingEntity<HealthyUserDish>(e =>
 				e.Property(c => c.MealTime).HasDefaultValueSql("GETUTCDATE()"));
 		}
-	    //public DbSet<CaloryCalcApp.WebAPI.Models.DTOs.Roles.RoleDTO> RoleDTO { get; set; } = default!;
-	    //public DbSet<CaloryCalcApp.WebAPI.Models.DTOs.Roles.RoleDTO> RoleDTO { get; set; } = default!;
-		//public DbSet<CaloryCalcApp.WebAPI.Models.DTOs.Products.ProductDTO> ProductDTO { get; set; } = default!;
-		//public DbSet<CaloryCalcApp.WebAPI.Models.DTOs.Admins.RegisterUserDTO> RegisterUserDTO { get; set; } = default!;
-		//public DbSet<CaloryCalcApp.WebAPI.Models.DTOs.Admin.LoginUserDTO> LoginUserDTO { get; set; } = default!;
-		//public DbSet<CaloryCalcApp.WebAPI.Models.DTOs.Admins.RegisterUserDTO> RegisterUserDTO { get; set; } = default!;
+	    //public DbSet<CaloryCalcApp.Web.Models.DTOs.Roles.RoleDTO> RoleDTO { get; set; } = default!;
+	    //public DbSet<CaloryCalcApp.Web.Models.DTOs.Roles.RoleDTO> RoleDTO { get; set; } = default!;
+		//public DbSet<CaloryCalcApp.Web.Models.DTOs.Products.ProductDTO> ProductDTO { get; set; } = default!;
+		//public DbSet<CaloryCalcApp.Web.Models.DTOs.Admins.RegisterUserDTO> RegisterUserDTO { get; set; } = default!;
+		//public DbSet<CaloryCalcApp.Web.Models.DTOs.Admin.LoginUserDTO> LoginUserDTO { get; set; } = default!;
+		//public DbSet<CaloryCalcApp.Web.Models.DTOs.Admins.RegisterUserDTO> RegisterUserDTO { get; set; } = default!;
 
 	}
 }
+

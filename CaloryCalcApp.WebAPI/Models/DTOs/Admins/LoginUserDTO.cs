@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace CaloryCalcApp.WebAPI.Models.DTOs.Admin
+namespace CaloryCalcApp.Web.Models.DTOs.Admins
 {
     public class LoginUserDTO
     {
@@ -21,3 +21,4 @@ namespace CaloryCalcApp.WebAPI.Models.DTOs.Admin
         public string? ReturnUrl { get; set; }
     }
 }
+

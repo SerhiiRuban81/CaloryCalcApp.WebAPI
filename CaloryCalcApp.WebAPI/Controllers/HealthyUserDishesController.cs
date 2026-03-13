@@ -1,27 +1,20 @@
-﻿using AutoMapper;
-using CaloryCalcApp.WebAPI.Data;
-using CaloryCalcApp.WebAPI.Models.DTOs.HealthyUserDishes;
+using AutoMapper;
+using CaloryCalcApp.Web.Data;
+using CaloryCalcApp.Web.Models.DTOs.HealthyUserDishes;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations; // this and next using were added to get `Dish name` label from Dish.cs
-using System.Linq;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using X.PagedList;
 using X.PagedList.Extensions;
-using X.PagedList.Mvc;
 
 
-namespace CaloryCalcApp.WebAPI.Controllers
+namespace CaloryCalcApp.Web.Controllers
 {
     [Authorize]
     public class HealthyUserDishesController : Controller
@@ -37,15 +30,8 @@ namespace CaloryCalcApp.WebAPI.Controllers
             _userManager = userManager;
         }
 
-        // GET: HealthyUserDishes
-        //public async Task<IActionResult> Index()
-        //{
-        //    var caloriesContext = _context.HealthyUserDishes.Include(h => h.Dish).Include(h => h.HealthyUser);
-        //    return View(await caloriesContext.ToListAsync());
-        //}
-
         // Modified Index action with pagination support
-        public async Task<ActionResult> Index(int page = 1, int pageSize = 10, int? oldPageSize = null)
+        public async Task<ActionResult> IndexAsync(int page = 1, int pageSize = 10, int? oldPageSize = null)
         {
             if (oldPageSize.HasValue && oldPageSize.Value != pageSize)
             {
@@ -92,7 +78,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
 
         // GET: HealthyUserDishes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> DetailsAsync(int? id)
         {
             if (id == null)
             {
@@ -129,7 +115,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DishId,Amount,HealthyUserId,MealTime")] HealthyUserDishDTO healthyUserDishDTO)
+        public async Task<IActionResult> CreateAsync([Bind("Id,DishId,Amount,HealthyUserId,MealTime")] HealthyUserDishDTO healthyUserDishDTO)
         {
 
             if (ModelState.IsValid)
@@ -137,7 +123,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
                 HealthyUserDish healthyUserDish = _mapper.Map<HealthyUserDish>(healthyUserDishDTO);
                 _context.Add(healthyUserDish);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
             ViewData["DishId"] = new SelectList(_context.Dishes, "Id", "Name", healthyUserDishDTO.DishId);
             ViewData["HealthyUserId"] = new SelectList(_context.Users, "Id", "Id", healthyUserDishDTO.HealthyUserId);
@@ -145,7 +131,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
 
         // GET: HealthyUserDishes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> EditAsync(int? id)
         {
             if (id == null)
             {
@@ -167,7 +153,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DishId,Amount,HealthyUserId,MealTime")] HealthyUserDish healthyUserDish)
+        public async Task<IActionResult> EditAsync(int id, [Bind("Id,DishId,Amount,HealthyUserId,MealTime")] HealthyUserDish healthyUserDish)
         {
             if (id != healthyUserDish.Id)
             {
@@ -192,7 +178,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
             ViewData["DishId"] = new SelectList(_context.Dishes, "Id", "Name", healthyUserDish.DishId);
             ViewData["HealthyUserId"] = new SelectList(_context.Users, "Id", "Id", healthyUserDish.HealthyUserId);
@@ -200,7 +186,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
 
         // GET: HealthyUserDishes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> DeleteAsync(int? id)
         {
             if (id == null)
             {
@@ -222,7 +208,7 @@ namespace CaloryCalcApp.WebAPI.Controllers
         // POST: HealthyUserDishes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmedAsync(int id)
         {
             var healthyUserDish = await _context.HealthyUserDishes.FindAsync(id);
             if (healthyUserDish != null)
@@ -231,12 +217,12 @@ namespace CaloryCalcApp.WebAPI.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> Statistics(int days = 7)
+        public async Task<IActionResult> StatisticsAsync(int days = 7)
         {
             // Let's define options for our time dropdown list on Razor page:
             var timeOptions = new List<SelectListItem>
@@ -393,3 +379,4 @@ namespace CaloryCalcApp.WebAPI.Controllers
         }
     }
 }
+

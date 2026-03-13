@@ -1,8 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using CaloryCalcLibrary;
-using CaloryCalcApp.WebAPI.Models.DTOs.Products;
+using CaloryCalcApp.Web.Models.DTOs.Products;
 
-namespace CaloryCalcApp.WebAPI.Profiles
+namespace CaloryCalcApp.Web.Profiles
 {
     public class ProductProfile : Profile
     {
@@ -12,3 +12,4 @@ namespace CaloryCalcApp.WebAPI.Profiles
         }        
     }
 }
+
