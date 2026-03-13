@@ -8,7 +8,7 @@ namespace CaloryCalcApp.Web.Profiles
     {
         public RoleProfile()
         {
-            CreateMap<IdentityRole, RoleDTO>().ReverseMap();
+            CreateMap<IdentityRole, RoleDto>().ReverseMap();
         }
     }
 }

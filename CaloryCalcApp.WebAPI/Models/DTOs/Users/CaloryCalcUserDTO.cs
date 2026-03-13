@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CaloryCalcApp.Web.Models.DTOs.Users
 {
-    public class CaloryCalcUserDTO
+    public class CaloryCalcUserDto
     {
         public string Id { get; set; } = default!;
 

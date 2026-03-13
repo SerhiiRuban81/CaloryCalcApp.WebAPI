@@ -22,7 +22,7 @@ namespace CaloryCalcApp.Web.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CaloryCalcApp.Web.Models.DTOs.Admins.RegisterUserDTO", b =>
+            modelBuilder.Entity("CaloryCalcApp.Web.Models.DTOs.Admins.RegisterUserDto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -64,10 +64,10 @@ namespace CaloryCalcApp.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RegisterUserDTO");
+                    b.ToTable("RegisterUserDto");
                 });
 
-            modelBuilder.Entity("CaloryCalcApp.Web.Models.DTOs.Products.ProductDTO", b =>
+            modelBuilder.Entity("CaloryCalcApp.Web.Models.DTOs.Products.ProductDto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -96,7 +96,7 @@ namespace CaloryCalcApp.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductDTO");
+                    b.ToTable("ProductDto");
                 });
 
             modelBuilder.Entity("CaloryCalcLibrary.Dish", b =>

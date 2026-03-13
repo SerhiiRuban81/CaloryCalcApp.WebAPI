@@ -32,12 +32,12 @@ namespace CaloryCalcApp.Web.Data
 				.UsingEntity<HealthyUserDish>(e =>
 				e.Property(c => c.MealTime).HasDefaultValueSql("GETUTCDATE()"));
 		}
-	    //public DbSet<CaloryCalcApp.Web.Models.DTOs.Roles.RoleDTO> RoleDTO { get; set; } = default!;
-	    //public DbSet<CaloryCalcApp.Web.Models.DTOs.Roles.RoleDTO> RoleDTO { get; set; } = default!;
-		//public DbSet<CaloryCalcApp.Web.Models.DTOs.Products.ProductDTO> ProductDTO { get; set; } = default!;
-		//public DbSet<CaloryCalcApp.Web.Models.DTOs.Admins.RegisterUserDTO> RegisterUserDTO { get; set; } = default!;
-		//public DbSet<CaloryCalcApp.Web.Models.DTOs.Admin.LoginUserDTO> LoginUserDTO { get; set; } = default!;
-		//public DbSet<CaloryCalcApp.Web.Models.DTOs.Admins.RegisterUserDTO> RegisterUserDTO { get; set; } = default!;
+	    //public DbSet<CaloryCalcApp.Web.Models.DTOs.Roles.RoleDto> RoleDto { get; set; } = default!;
+	    //public DbSet<CaloryCalcApp.Web.Models.DTOs.Roles.RoleDto> RoleDto { get; set; } = default!;
+		//public DbSet<CaloryCalcApp.Web.Models.DTOs.Products.ProductDto> ProductDto { get; set; } = default!;
+		//public DbSet<CaloryCalcApp.Web.Models.DTOs.Admins.RegisterUserDto> RegisterUserDto { get; set; } = default!;
+		//public DbSet<CaloryCalcApp.Web.Models.DTOs.Admin.LoginUserDto> LoginUserDto { get; set; } = default!;
+		//public DbSet<CaloryCalcApp.Web.Models.DTOs.Admins.RegisterUserDto> RegisterUserDto { get; set; } = default!;
 
 	}
 }

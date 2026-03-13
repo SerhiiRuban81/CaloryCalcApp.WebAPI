@@ -4,11 +4,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CaloryCalcApp.Web.Models.DTOs.Dishes
 {
-    public class DishDTO
+    public class DishDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = default!;
-        public List<DishProductDTO> DishProducts { get; set; } = new();
+        public List<DishProductDto> DishProducts { get; set; } = new();
         public double? TotalFats { get; set; }
         public double? TotalCalories { get; set; }
         public double? TotalProteins { get; set; }

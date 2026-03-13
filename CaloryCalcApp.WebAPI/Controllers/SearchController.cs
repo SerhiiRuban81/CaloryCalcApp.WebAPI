@@ -52,7 +52,7 @@ namespace CaloryCalcApp.Web.Controllers
                         .OrderBy(p => p.Id)
                         .ToListAsync();
 
-                    model.ProductsFound = _mapper.Map<List<ProductDTO>>(pf);
+                    model.ProductsFound = _mapper.Map<List<ProductDto>>(pf);
                 }
 
                 if (searchType == "Dish" || searchType == "FullSearch")
@@ -62,7 +62,7 @@ namespace CaloryCalcApp.Web.Controllers
                         .OrderBy(p => p.Id)
                         .ToListAsync();
 
-                    model.DishesFound = _mapper.Map<List<DishDTO>>(df);
+                    model.DishesFound = _mapper.Map<List<DishDto>>(df);
                 }
 
                 if (searchType == "User" || searchType == "FullSearch")
@@ -96,13 +96,13 @@ namespace CaloryCalcApp.Web.Controllers
                     {
                         // Let's choouse products where `Name` contains symbols from our search
                         var pf = await _context.Products.Where(p => p.Name.Contains(model.SearchText)).OrderBy(p => p.Id).ToListAsync();
-                        model.ProductsFound = _mapper.Map<List<ProductDTO>>(pf);
+                        model.ProductsFound = _mapper.Map<List<ProductDto>>(pf);
                     }
                     if (model.SearchType == "Dish" || model.SearchType == "FullSearch")
                     {
                         // Let's choouse dishes where `Name` contains symbols from our search
                         var df = await _context.Dishes.Where(p => p.Name.Contains(model.SearchText)).OrderBy(p => p.Id).ToListAsync();
-                        model.DishesFound = _mapper.Map<List<DishDTO>>(df);
+                        model.DishesFound = _mapper.Map<List<DishDto>>(df);
                     }
                     if (model.SearchType == "User" || model.SearchType == "FullSearch")
                     {

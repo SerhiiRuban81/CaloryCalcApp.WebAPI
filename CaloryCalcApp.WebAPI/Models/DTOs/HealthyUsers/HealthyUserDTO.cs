@@ -2,21 +2,20 @@ using CaloryCalcApp.Web.Models.DTOs.Dishes;
 
 namespace CaloryCalcApp.Web.Models.DTOs.HealthyUsers
 {
-    public class HealthyUserDTO
+    public class HealthyUserDto
     {
         public string? Id { get; set; }
 
-        public string? Name { get; set; } = default!; // Ім'я користувача
+        public string? Name { get; set; } = default!;
 
-        public double Weight { get; set; } = default!; // Вага
+        public double Weight { get; set; } = default!;
 
-        public int Height { get; set; } = default!; // Зріст
+        public int Height { get; set; } = default!;
 
-        public DateOnly DateOfBirth { get; set; } // Дата народження
+        public DateOnly DateOfBirth { get; set; }
 
         public string Sex { get; set; } = default!;
 
-        public List<DishDTO> Dishes { get; set; } = [];
+        public List<DishDto> Dishes { get; set; } = [];
     }
 }
-

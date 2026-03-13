@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CaloryCalcApp.Web.Models.DTOs.Roles
 {
-    public class RoleDTO
+    public class RoleDto
     {
         public string Id { get; set; } = default!;
         [Display(Name = "Role title")]

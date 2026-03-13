@@ -2,10 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CaloryCalcApp.Web.Models.DTOs.Admins
 {
-    public class LoginUserDTO
+    public class LoginUserDto
     {
-        //public int Id { get; set; }
-
         [Required]
         [Display(Name = "Login")]
         public string Username { get; set; } = default!;

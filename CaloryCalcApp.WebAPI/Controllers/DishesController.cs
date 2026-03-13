@@ -38,8 +38,8 @@ namespace CaloryCalcApp.Web.Controllers
                 .Include(d => d.DishProducts)
                 .ThenInclude(dp => dp.Product)
                 .OrderBy(p => p.Id).ToList();
-            var dishesDTO = _mapper.Map<List<DishDTO>>(dishes);
-            var pagedDishes = dishesDTO.ToPagedList(page, pageSize);
+            var dishesDto = _mapper.Map<List<DishDto>>(dishes);
+            var pagedDishes = dishesDto.ToPagedList(page, pageSize);
 
             ViewBag.PageSize = pageSize;
             ViewBag.Page = page;
@@ -62,7 +62,7 @@ namespace CaloryCalcApp.Web.Controllers
             {
                 return NotFound();
             }
-            var dishDTO = _mapper.Map<DishDTO>(dish);
+            var dishDto = _mapper.Map<DishDto>(dish);
 
             var products = _context.Products.ToList();
             var dishProductIds = dish.DishProducts.Select(dp => dp.ProductId).ToHashSet();
@@ -77,7 +77,7 @@ namespace CaloryCalcApp.Web.Controllers
             }
             ViewBag.ProductNames = productNames;
 
-            return View(dishDTO);
+            return View(dishDto);
         }
 
         public IActionResult Create()
@@ -90,7 +90,7 @@ namespace CaloryCalcApp.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateAsync(
-            [Bind("Id,Name")] DishDTO dishDTO,
+            [Bind("Id,Name")] DishDto dishDto,
             List<int> Products,
             List<int> ProductQuantities,
             List<string> MeasurementUnits)
@@ -99,11 +99,11 @@ namespace CaloryCalcApp.Web.Controllers
                  Products.Count != ProductQuantities.Count || Products.Count != MeasurementUnits.Count)
             {
                 ModelState.AddModelError("", "Mismatch in products and quantities data.");
-                return View(dishDTO);
+                return View(dishDto);
             }
             if (ModelState.IsValid)
             {
-                var dish = new Dish { Name = dishDTO.Name };
+                var dish = new Dish { Name = dishDto.Name };
                 for (int i = 0; i < Products.Count; i++)
                 {
                     dish.DishProducts.Add(new DishProduct
@@ -118,7 +118,7 @@ namespace CaloryCalcApp.Web.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(dishDTO);
+            return View(dishDto);
         }
 
         public async Task<IActionResult> EditAsync(int? id)

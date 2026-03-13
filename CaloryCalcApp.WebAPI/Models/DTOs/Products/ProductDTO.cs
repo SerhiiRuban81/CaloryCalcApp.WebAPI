@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CaloryCalcApp.Web.Models.DTOs.Products
 {
-    public class ProductDTO
+    public class ProductDto
     {
         public int Id { get; set; }
         [Required]

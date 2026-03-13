@@ -45,7 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CaloryCalcLibrary\CaloryCalcLibrary.csproj" />
+    <ProjectReference Include="..\CaloryCalcLibrary\CaloryCalcApp.Domain.csproj" />
   </ItemGroup>
 
 </Project>

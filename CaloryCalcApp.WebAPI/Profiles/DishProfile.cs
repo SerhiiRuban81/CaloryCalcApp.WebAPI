@@ -9,11 +9,11 @@ namespace CaloryCalcApp.Web.Profiles
     {
         public DishProfile()
         {
-            //CreateMap<Dish, DishDTO>()
+            //CreateMap<Dish, DishDto>()
             //    .ReverseMap();
 
-            // We are using following code to map data, received by our Function in DTO members
-            CreateMap<Dish, DishDTO>()
+            // We are using following code to map data, received by our Function in Dto members
+            CreateMap<Dish, DishDto>()
                 .ForMember(dest => dest.DishProducts, opt => opt.MapFrom(src => src.DishProducts))
                 .ForMember(dest => dest.TotalProteins, opt => opt.MapFrom(src => src.GetGlobalProteins()))
                 .ForMember(dest => dest.TotalCarbohydrates, opt => opt.MapFrom(src => src.GetGlobalCarbohydrates()))

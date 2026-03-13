@@ -9,7 +9,7 @@ namespace CaloryCalcApp.Web.Profiles
     {
         public HealthyUserDishProfile()
         {
-            CreateMap<HealthyUserDish, HealthyUserDishDTO>()
+            CreateMap<HealthyUserDish, HealthyUserDishDto>()
                 .ReverseMap();
         }
     }

@@ -37,13 +37,13 @@ public class AccountController : Controller
 
     [AllowAnonymous]
     [HttpPost]
-    public async Task<IActionResult> RegisterAsync(RegisterUserDTO dto)
+    public async Task<IActionResult> RegisterAsync(RegisterUserDto Dto)
     {
         if(!ModelState.IsValid)
-            return View("Register", dto);
+            return View("Register", Dto);
 
-        HealthyUser healthyUser = _mapper.Map<HealthyUser>(dto);
-        var result = await _userManager.CreateAsync(healthyUser, dto.Password);
+        HealthyUser healthyUser = _mapper.Map<HealthyUser>(Dto);
+        var result = await _userManager.CreateAsync(healthyUser, Dto.Password);
         if (result.Succeeded)
         {
             await _signInManager.SignInAsync(healthyUser, isPersistent: false);
@@ -55,7 +55,7 @@ public class AccountController : Controller
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
-            return View("Register", dto);
+            return View("Register", Dto);
         }
     }
 
@@ -67,15 +67,15 @@ public class AccountController : Controller
 
     [AllowAnonymous]
     [HttpPost]
-    public async Task<IActionResult> LoginAsync(LoginUserDTO dto)
+    public async Task<IActionResult> LoginAsync(LoginUserDto Dto)
     {
         if (!ModelState.IsValid)
-            return View("Login", dto);
-        HealthyUser? healthyUser = await _userManager.FindByNameAsync(dto.Username);
+            return View("Login", Dto);
+        HealthyUser? healthyUser = await _userManager.FindByNameAsync(Dto.Username);
         if (healthyUser != null)
         {
-            var result = await _signInManager.PasswordSignInAsync(healthyUser, dto.Password,
-                dto.RememberMe, false);
+            var result = await _signInManager.PasswordSignInAsync(healthyUser, Dto.Password,
+                Dto.RememberMe, false);
             if (result.Succeeded)
                 return RedirectToAction("Index", "Home");
             else
@@ -83,7 +83,7 @@ public class AccountController : Controller
         }
         else
             ModelState.AddModelError(string.Empty, "User not found");
-        return View("Login", dto);
+        return View("Login", Dto);
     }
     
     public async Task<IActionResult> LogoutAsync()

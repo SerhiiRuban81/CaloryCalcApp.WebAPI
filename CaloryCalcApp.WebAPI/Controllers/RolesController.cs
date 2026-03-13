@@ -29,8 +29,8 @@ namespace CaloryCalcApp.Web.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             var roles = await _roleManager.Roles.ToListAsync();
-            var roleDTOs = _mapper.Map<IEnumerable<RoleDTO>>(roles);
-            return View(roleDTOs);
+            var roleDtos = _mapper.Map<IEnumerable<RoleDto>>(roles);
+            return View(roleDtos);
         }
 
         [Authorize(Roles = "admin")]
@@ -75,8 +75,8 @@ namespace CaloryCalcApp.Web.Controllers
                 return NotFound();
             }
 
-            var roleDTO = _mapper.Map<RoleDTO>(role);
-            return View(roleDTO);
+            var roleDto = _mapper.Map<RoleDto>(role);
+            return View(roleDto);
         }
 
         [HttpPost, ActionName("DeleteConfirmed")]
@@ -101,8 +101,8 @@ namespace CaloryCalcApp.Web.Controllers
             {
                 ModelState.AddModelError("", error.Description);
             }
-            var roleDTO = _mapper.Map<RoleDTO>(role);
-            return View(roleDTO);
+            var roleDto = _mapper.Map<RoleDto>(role);
+            return View(roleDto);
         }
 
         [HttpGet]
@@ -117,8 +117,8 @@ namespace CaloryCalcApp.Web.Controllers
             {
                 return NotFound();
             }
-            var roleDTO = _mapper.Map<RoleDTO>(role);
-            return View(roleDTO);
+            var roleDto = _mapper.Map<RoleDto>(role);
+            return View(roleDto);
         }
 
         [HttpPost]
@@ -145,8 +145,8 @@ namespace CaloryCalcApp.Web.Controllers
             {
                 ModelState.AddModelError("", error.Description);
             }
-            var roleDTO = _mapper.Map<RoleDTO>(role);
-            return View(roleDTO);
+            var roleDto = _mapper.Map<RoleDto>(role);
+            return View(roleDto);
         }
 
         public async Task<IActionResult> UserListAsync(int page = 1, int pageSize = 10, int? oldPageSize = null)
@@ -158,17 +158,17 @@ namespace CaloryCalcApp.Web.Controllers
             }
 
             var healthyUsers = await _userManager.Users.ToListAsync();
-            var userDTOs = _mapper.Map<IEnumerable<HealthyUserDTO>>(healthyUsers);
-            foreach (var userDTO in userDTOs)
+            var userDtos = _mapper.Map<IEnumerable<HealthyUserDto>>(healthyUsers);
+            foreach (var userDto in userDtos)
             {
-                var user = healthyUsers.FirstOrDefault(u => u.Id.ToString() == userDTO.Id);
+                var user = healthyUsers.FirstOrDefault(u => u.Id.ToString() == userDto.Id);
                 if (user != null)
                 {
-                    userDTO.Name = user.UserName ?? "(no username)";
+                    userDto.Name = user.UserName ?? "(no username)";
                 }
             }
 
-            var pagedUsers = userDTOs.ToPagedList(page, pageSize);
+            var pagedUsers = userDtos.ToPagedList(page, pageSize);
             ViewBag.PageSize = pageSize;
             ViewBag.Page = page;
 

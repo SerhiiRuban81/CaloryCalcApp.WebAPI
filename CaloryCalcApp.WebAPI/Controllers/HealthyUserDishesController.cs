@@ -64,8 +64,8 @@ namespace CaloryCalcApp.Web.Controllers
                     .Where(h => h.HealthyUser.Id == currentUserId)
                     .OrderBy(h => h.Id);
             }
-            var healthyUserDishesDTO = _mapper.Map<List<HealthyUserDishDTO>>(healthyUserDishes);
-            var pagedHealthyUserDishes = healthyUserDishesDTO.ToPagedList(page, pageSize);
+            var healthyUserDishesDto = _mapper.Map<List<HealthyUserDishDto>>(healthyUserDishes);
+            var pagedHealthyUserDishes = healthyUserDishesDto.ToPagedList(page, pageSize);
             ViewBag.DishNames = _context.Dishes.ToDictionary(d => d.Id, d => d.Name);
             ViewBag.PageSize = pageSize;
             ViewBag.Page = page;
@@ -106,18 +106,18 @@ namespace CaloryCalcApp.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAsync([Bind("Id,DishId,Amount,HealthyUserId,MealTime")] HealthyUserDishDTO healthyUserDishDTO)
+        public async Task<IActionResult> CreateAsync([Bind("Id,DishId,Amount,HealthyUserId,MealTime")] HealthyUserDishDto healthyUserDishDto)
         {
             if (ModelState.IsValid)
             {
-                var healthyUserDish = _mapper.Map<HealthyUserDish>(healthyUserDishDTO);
+                var healthyUserDish = _mapper.Map<HealthyUserDish>(healthyUserDishDto);
                 _context.Add(healthyUserDish);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewData["DishId"] = new SelectList(_context.Dishes, "Id", "Name", healthyUserDishDTO.DishId);
-            ViewData["HealthyUserId"] = new SelectList(_context.Users, "Id", "Id", healthyUserDishDTO.HealthyUserId);
-            return View(healthyUserDishDTO);
+            ViewData["DishId"] = new SelectList(_context.Dishes, "Id", "Name", healthyUserDishDto.DishId);
+            ViewData["HealthyUserId"] = new SelectList(_context.Users, "Id", "Id", healthyUserDishDto.HealthyUserId);
+            return View(healthyUserDishDto);
         }
 
         public async Task<IActionResult> EditAsync(int? id)
@@ -256,8 +256,8 @@ namespace CaloryCalcApp.Web.Controllers
                 days = (int)(DateTime.Now - healthyUserDishes.Min(h => h.MealTime)).TotalDays; // Calculate total days based on the earliest recorded meal time for the user
             }
 
-            // Mapping our dishes to DTO before transferring to razor page
-            var healthyUserDishesDTO = _mapper.Map<List<HealthyUserDishDTO>>(healthyUserDishes);
+            // Mapping our dishes to Dto before transferring to razor page
+            var healthyUserDishesDto = _mapper.Map<List<HealthyUserDishDto>>(healthyUserDishes);
 
             // Let's prepare data for chart: Date labels and total calories per date
             var dataPoints = healthyUserDishes
@@ -286,7 +286,7 @@ namespace CaloryCalcApp.Web.Controllers
             ViewBag.AverageProteinsPerDay = Math.Round(ViewBag.TotalProteins / days, 2);
             ViewBag.AverageCarbohydratesPerDay = Math.Round(ViewBag.TotalCarbohydrates / days, 2);
 
-            return View(healthyUserDishesDTO);
+            return View(healthyUserDishesDto);
 
 
 
@@ -336,10 +336,10 @@ namespace CaloryCalcApp.Web.Controllers
                 .ToListAsync();
             }
 
-            // Mapping our dishes to DTO before transferring to razor page
-            var healthyUserDishesDTO = _mapper.Map<List<HealthyUserDishDTO>>(healthyUserDishes);
+            // Mapping our dishes to Dto before transferring to razor page
+            var healthyUserDishesDto = _mapper.Map<List<HealthyUserDishDto>>(healthyUserDishes);
             // Getting Id's of User's dishes
-            var usedDishIds = healthyUserDishesDTO.Select(x => x.DishId).Distinct().ToList();
+            var usedDishIds = healthyUserDishesDto.Select(x => x.DishId).Distinct().ToList();
             // Getting dishes names, belonging to our Users
             var dishNames = await _context.Dishes.Where(d => usedDishIds.Contains(d.Id)).ToDictionaryAsync(d => d.Id, d => d.Name);
             // Getting dish calories for each User's dish and calculating total calories for each dish based on consumed amount of the dish by User
@@ -355,7 +355,7 @@ namespace CaloryCalcApp.Web.Controllers
 
             // Returning ViewBag with dishes names fro further using on our Razor page
             ViewBag.DishNames = dishNames;
-            return View(healthyUserDishesDTO);*/
+            return View(healthyUserDishesDto);*/
         }
 
         // Function to check if a HealthyUserDish with a given Id exists in the database

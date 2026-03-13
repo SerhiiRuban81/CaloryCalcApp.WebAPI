@@ -8,7 +8,7 @@ namespace CaloryCalcApp.Web.Profiles
     {
         public DishProductProfile()
         {
-            CreateMap<DishProduct, DishProductDTO>()
+            CreateMap<DishProduct, DishProductDto>()
                 .ReverseMap();
         }
     }

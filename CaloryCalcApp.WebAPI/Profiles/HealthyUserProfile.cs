@@ -8,9 +8,9 @@ namespace CaloryCalcApp.Web.Profiles;
 public class HealthyUserProfile : Profile
 {
     public HealthyUserProfile() {
-        CreateMap<HealthyUser, HealthyUserDTO>()
+        CreateMap<HealthyUser, HealthyUserDto>()
             .ReverseMap();
-        CreateMap<RegisterUserDTO, HealthyUser>()
+        CreateMap<RegisterUserDto, HealthyUser>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username));
     }
 }

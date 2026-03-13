@@ -1,12 +1,9 @@
 using CaloryCalcLibrary;
-using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace CaloryCalcApp.Web.Models.DTOs.Admins
 {
-   
-
-    public class RegisterUserDTO
+    public class RegisterUserDto
     {
         public int Id { get; set; }
 
@@ -30,26 +27,23 @@ namespace CaloryCalcApp.Web.Models.DTOs.Admins
         [Compare(nameof(Password), ErrorMessage = "Passwords do not match")]
         public string ConfirmPassword { get; set; } = default!;
 
-
         [Required]
         [Display(Name = "Weight")]
-        public double Weight { get; set; } = default!; // Вага
+        public double Weight { get; set; } = default!;
 
         [Required]
         [Display(Name = "Height")]
-        public int Height { get; set; } = default!; // Зріст
+        public int Height { get; set; } = default!;
 
         [Required]
         [Display(Name = "Date of Birth")]
-        public DateOnly DateOfBirth { get; set; } // Дата народження
+        public DateOnly DateOfBirth { get; set; }
 
         [Required]
         [Display(Name = "Sex")]
-        public Sex Sex { get; set; } = default!; // Стать
+        public Sex Sex { get; set; } = default!;
 
-        // To remain in system or exit
         [Display(Name = "Remain in system")]
         public bool IsPersistent { get; set; } = false;
     }
 }
-

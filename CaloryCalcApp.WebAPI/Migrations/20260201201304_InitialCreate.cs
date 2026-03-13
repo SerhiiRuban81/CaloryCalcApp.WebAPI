@@ -68,7 +68,7 @@ namespace CaloryCalcApp.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductDTO",
+                name: "ProductDto",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -82,7 +82,7 @@ namespace CaloryCalcApp.Web.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductDTO", x => x.Id);
+                    table.PrimaryKey("PK_ProductDto", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -104,7 +104,7 @@ namespace CaloryCalcApp.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RegisterUserDTO",
+                name: "RegisterUserDto",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -121,7 +121,7 @@ namespace CaloryCalcApp.Web.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RegisterUserDTO", x => x.Id);
+                    table.PrimaryKey("PK_RegisterUserDto", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -371,10 +371,10 @@ namespace CaloryCalcApp.Web.Migrations
                 name: "HealthyUserDishes");
 
             migrationBuilder.DropTable(
-                name: "ProductDTO");
+                name: "ProductDto");
 
             migrationBuilder.DropTable(
-                name: "RegisterUserDTO");
+                name: "RegisterUserDto");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

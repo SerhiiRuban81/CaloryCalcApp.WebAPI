@@ -1,4 +1,4 @@
-﻿@model CaloryCalcApp.Web.Models.DTOs.HealthyUsers.HealthyUserDTO
+@model CaloryCalcApp.Web.Models.DTOs.HealthyUsers.HealthyUserDto
 <h2>User Details</h2>
 
 <div class="card shadow-sm p-4 mb-3">
@@ -105,7 +105,7 @@
 }
 
 
-@* @model CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers.HealthyUserDTO
+@* @model CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers.HealthyUserDto
 <h2>User Details</h2>
 
 <div class="card shadow-sm p-4 mb-3">
@@ -116,7 +116,7 @@
     </p>
     <div id="weightInputDiv" style="display:none;">
         <form method="post" action="/HealthyUsers/WeightUpdate">
-            <input type="hidden" name="userDTO.Id" value="@Model.Id" />
+            <input type="hidden" name="userDto.Id" value="@Model.Id" />
             <input type="text" name="NewWeight" value="@Model.Weight" />
             <button type="submit">Save</button>
         </form>

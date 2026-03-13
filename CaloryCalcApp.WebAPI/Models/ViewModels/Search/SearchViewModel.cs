@@ -11,8 +11,8 @@ namespace CaloryCalcApp.Web.Models.ViewModels.Search
     {
         public string SearchText { get; set; } = string.Empty;
         public string SearchType { get; set; } = string.Empty;
-        public List<ProductDTO> ProductsFound { get; set; } = new List<ProductDTO>();
-        public List<DishDTO> DishesFound { get; set; } = new List<DishDTO>();
+        public List<ProductDto> ProductsFound { get; set; } = new List<ProductDto>();
+        public List<DishDto> DishesFound { get; set; } = new List<DishDto>();
         public List<HealthyUser> UsersFound { get; set; } = new List<HealthyUser>();
     }
 }

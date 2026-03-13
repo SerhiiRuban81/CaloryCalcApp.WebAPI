@@ -23,13 +23,6 @@ namespace CaloryCalcApp.Web.Controllers
             _mapper = mapper;
         }
 
-        // GET: Products
-        //public async Task<IActionResult> Index()
-        //{
-        //    return View(await _context.Products.ToListAsync());
-        //}
-
-        // Modified Index action with pagination support 
         public ActionResult Index(int page = 1, int pageSize = 10, int? oldPageSize = null)
         {
             if (oldPageSize.HasValue && oldPageSize.Value != pageSize)
@@ -39,9 +32,8 @@ namespace CaloryCalcApp.Web.Controllers
             }
 
             var products = _context.Products.OrderBy(p => p.Id);
-
-            var productsDTO = _mapper.Map<List<ProductDTO>>(products);
-            var pagedProducts = productsDTO.ToPagedList(page, pageSize);
+            var productDtos = _mapper.Map<List<ProductDto>>(products);
+            var pagedProducts = productDtos.ToPagedList(page, pageSize);
 
             ViewBag.PageSize = pageSize;
             ViewBag.Page = page;
@@ -50,7 +42,6 @@ namespace CaloryCalcApp.Web.Controllers
         }
 
 
-        // GET: Products/Details/5
         public async Task<IActionResult> DetailsAsync(int? id)
         {
             if (id == null)
@@ -68,32 +59,25 @@ namespace CaloryCalcApp.Web.Controllers
             return View(product);
         }
 
-        // GET: Products/Create
         public IActionResult Create()
         {
-            // Checking if the method is called
-            //System.Diagnostics.Debug.WriteLine("Inside `Create` method");
-            return View(new ProductDTO());
+            return View(new ProductDto());
         }
 
-        // POST: Products/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAsync([Bind("Id,Name,Density,Calories,Fats,Carbohydrates,Proteins")] ProductDTO productDTO)
+        public async Task<IActionResult> CreateAsync([Bind("Id,Name,Density,Calories,Fats,Carbohydrates,Proteins")] ProductDto productDto)
         {
             if (ModelState.IsValid)
             {
-                Product product = _mapper.Map<Product>(productDTO);
+                var product = _mapper.Map<Product>(productDto);
                 _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(productDTO);
+            return View(productDto);
         }
 
-        // GET: Products/Edit/5
         public async Task<IActionResult> EditAsync(int? id)
         {
             if (id == null)
@@ -121,9 +105,6 @@ namespace CaloryCalcApp.Web.Controllers
 			return Json(products);
 		}
 
-		// POST: Products/Edit/5
-		// To protect from overposting attacks, enable the specific properties you want to bind to.
-		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> EditAsync(int id, [Bind("Id,Name,Density,Calories,Fats,Carbohydrates,Proteins")] Product product)
@@ -156,7 +137,6 @@ namespace CaloryCalcApp.Web.Controllers
             return View(product);
         }
 
-        // GET: Products/Delete/5
         public async Task<IActionResult> DeleteAsync(int? id)
         {
             if (id == null)
@@ -174,7 +154,6 @@ namespace CaloryCalcApp.Web.Controllers
             return View(product);
         }
 
-        // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmedAsync(int id)
