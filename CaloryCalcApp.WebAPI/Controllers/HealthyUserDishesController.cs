@@ -30,7 +30,6 @@ namespace CaloryCalcApp.Web.Controllers
             _userManager = userManager;
         }
 
-        // Modified Index action with pagination support
         public async Task<ActionResult> IndexAsync(int page = 1, int pageSize = 10, int? oldPageSize = null)
         {
             if (oldPageSize.HasValue && oldPageSize.Value != pageSize)
@@ -38,9 +37,7 @@ namespace CaloryCalcApp.Web.Controllers
                 int firstItemIndex = (page - 1) * oldPageSize.Value;
                 page = firstItemIndex / pageSize + 1;
             }
-            
 
-            // Let's get label from Dish.cs class to sign our table:
             var dishNameProperty = typeof(Dish).GetProperty("Name");
             var dishNameDisplayAttribute = dishNameProperty?.GetCustomAttribute<DisplayAttribute>();
             ViewBag.DishNameLabel = dishNameDisplayAttribute != null ? dishNameDisplayAttribute.Name : "Dish Name";
@@ -48,7 +45,7 @@ namespace CaloryCalcApp.Web.Controllers
             string? currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.ToString();
             if (currentUserId == null) return NotFound();
             var currentUser = await _userManager.FindByIdAsync(currentUserId);
-            if(currentUser == null) return NotFound();
+            if (currentUser == null) return NotFound();
             var currentRoles = await _userManager.GetRolesAsync(currentUser);
             IQueryable<HealthyUserDish> healthyUserDishes;
             if (currentRoles.Contains("admin"))
@@ -77,7 +74,6 @@ namespace CaloryCalcApp.Web.Controllers
 
         }
 
-        // GET: HealthyUserDishes/Details/5
         public async Task<IActionResult> DetailsAsync(int? id)
         {
             if (id == null)
@@ -97,30 +93,24 @@ namespace CaloryCalcApp.Web.Controllers
             return View(healthyUserDish);
         }
 
-        // GET: HealthyUserDishes/Create
         public IActionResult Create()
         {
-            // Let's get Id of our current User
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            ViewBag.CurrentUserId = userId; // Passing Id of current User to our Razor page to set it as default value for HealthyUserId field in Create form
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            ViewBag.CurrentUserId = userId;
 
             ViewData["DishId"] = new SelectList(_context.Dishes, "Id", "Name");
             ViewData["HealthyUserId"] = new SelectList(_context.Users, "Id", "Id", userId);
-            
+
             return View();
         }
 
-        // POST: HealthyUserDishes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateAsync([Bind("Id,DishId,Amount,HealthyUserId,MealTime")] HealthyUserDishDTO healthyUserDishDTO)
         {
-
             if (ModelState.IsValid)
             {
-                HealthyUserDish healthyUserDish = _mapper.Map<HealthyUserDish>(healthyUserDishDTO);
+                var healthyUserDish = _mapper.Map<HealthyUserDish>(healthyUserDishDTO);
                 _context.Add(healthyUserDish);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -130,7 +120,6 @@ namespace CaloryCalcApp.Web.Controllers
             return View(healthyUserDishDTO);
         }
 
-        // GET: HealthyUserDishes/Edit/5
         public async Task<IActionResult> EditAsync(int? id)
         {
             if (id == null)
@@ -148,9 +137,6 @@ namespace CaloryCalcApp.Web.Controllers
             return View(healthyUserDish);
         }
 
-        // POST: HealthyUserDishes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAsync(int id, [Bind("Id,DishId,Amount,HealthyUserId,MealTime")] HealthyUserDish healthyUserDish)

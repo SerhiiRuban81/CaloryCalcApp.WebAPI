@@ -29,7 +29,7 @@ namespace CaloryCalcApp.Web.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             var roles = await _roleManager.Roles.ToListAsync();
-            IEnumerable<RoleDTO> roleDTOs = _mapper.Map<IEnumerable<RoleDTO>>(roles);
+            var roleDTOs = _mapper.Map<IEnumerable<RoleDTO>>(roles);
             return View(roleDTOs);
         }
 
@@ -47,7 +47,7 @@ namespace CaloryCalcApp.Web.Controllers
                 ModelState.AddModelError("", "Role name cannot be empty.");
                 return View();
             }
-            IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(roleName));
+            var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
             if (result.Succeeded)
             {
                 return RedirectToAction("Index");
@@ -62,7 +62,6 @@ namespace CaloryCalcApp.Web.Controllers
             }
         }
 
-        // Delete method to show delete confirmation page
         public async Task<IActionResult> DeleteAsync(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -106,7 +105,6 @@ namespace CaloryCalcApp.Web.Controllers
             return View(roleDTO);
         }
 
-        // Get method to show edit form
         [HttpGet]
         public async Task<IActionResult> EditAsync(string id)
         {
@@ -123,7 +121,6 @@ namespace CaloryCalcApp.Web.Controllers
             return View(roleDTO);
         }
 
-        // Post method to handle edit form submission
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAsync(string id, string name)
@@ -152,7 +149,6 @@ namespace CaloryCalcApp.Web.Controllers
             return View(roleDTO);
         }
 
-        // Method to change user roles
         public async Task<IActionResult> UserListAsync(int page = 1, int pageSize = 10, int? oldPageSize = null)
         {
             if (oldPageSize.HasValue && oldPageSize.Value != pageSize)
@@ -161,14 +157,14 @@ namespace CaloryCalcApp.Web.Controllers
                 page = firstItemIndex / pageSize + 1;
             }
 
-            IEnumerable<HealthyUser> healthyUsers = await _userManager.Users.ToListAsync();
-            IEnumerable<HealthyUserDTO> userDTOs = _mapper.Map<IEnumerable<HealthyUser>, IEnumerable<HealthyUserDTO>>(healthyUsers);
+            var healthyUsers = await _userManager.Users.ToListAsync();
+            var userDTOs = _mapper.Map<IEnumerable<HealthyUserDTO>>(healthyUsers);
             foreach (var userDTO in userDTOs)
             {
-                HealthyUser? user = healthyUsers.FirstOrDefault(u => u.Id.ToString() == userDTO.Id);
+                var user = healthyUsers.FirstOrDefault(u => u.Id.ToString() == userDTO.Id);
                 if (user != null)
                 {
-                    userDTO.Name = user.UserName ?? "(no username)"; // Setting in our DTO the UserName from IdentityUser
+                    userDTO.Name = user.UserName ?? "(no username)";
                 }
             }
 
@@ -211,8 +207,8 @@ namespace CaloryCalcApp.Web.Controllers
             {
                 var addedRoles = vM.Roles!.Except(userRoles);
                 var deletedRoles = userRoles.Except(vM.Roles);
-                await _userManager.AddToRolesAsync(healthyUser, addedRoles); // Adding new roles if any
-                await _userManager.RemoveFromRolesAsync(healthyUser, deletedRoles); // Deleting old roles if any
+                await _userManager.AddToRolesAsync(healthyUser, addedRoles);
+                await _userManager.RemoveFromRolesAsync(healthyUser, deletedRoles);
 
                 return RedirectToAction("Index");
             }

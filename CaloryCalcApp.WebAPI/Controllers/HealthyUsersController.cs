@@ -29,15 +29,15 @@ namespace CaloryCalcApp.Web.Controllers
                 page = firstItemIndex / pageSize + 1;
             }
 
-            IEnumerable<HealthyUser> healthyUsers = await _userManager.Users.ToListAsync();
+            var healthyUsers = await _userManager.Users.ToListAsync();
 
-            IEnumerable<HealthyUserDTO> userDTOs = _mapper.Map<IEnumerable<HealthyUser>, IEnumerable<HealthyUserDTO>>(healthyUsers);
+            var userDTOs = _mapper.Map<IEnumerable<HealthyUserDTO>>(healthyUsers);
             foreach (var userDTO in userDTOs)
             {
-                HealthyUser? user = healthyUsers.FirstOrDefault(u => u.Id.ToString() == userDTO.Id);
+                var user = healthyUsers.FirstOrDefault(u => u.Id.ToString() == userDTO.Id);
                 if (user != null)
                 {
-                    userDTO.Name = user.UserName ?? "(no username)"; // Setting in our DTO the UserName from IdentityUser
+                    userDTO.Name = user.UserName ?? "(no username)";
                 }
             }
 
@@ -53,8 +53,8 @@ namespace CaloryCalcApp.Web.Controllers
             if (id == null) return NotFound();
             HealthyUser? user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
-            HealthyUserDTO userDTO = _mapper.Map<HealthyUser, HealthyUserDTO>(user);
-            userDTO.Name = user.UserName ?? "(no username)"; // Setting in our DTO the UserName from IdentityUser
+            var userDTO = _mapper.Map<HealthyUserDTO>(user);
+            userDTO.Name = user.UserName ?? "(no username)";
             return View(userDTO);
         }
 
@@ -65,11 +65,11 @@ namespace CaloryCalcApp.Web.Controllers
             HealthyUser? user = await _userManager.FindByIdAsync(userDTO.Id.ToString());
             if (user != null)
             {
-                await _userManager.SetUserNameAsync(user, userDTO.Name); // Updating the UserName using UserManager
+                await _userManager.SetUserNameAsync(user, userDTO.Name);
                 user.Weight = userDTO.Weight;
                 user.Height = userDTO.Height;
                 user.DateOfBirth = userDTO.DateOfBirth;
-                IdentityResult result = await _userManager.UpdateAsync(user);
+                var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index");
@@ -116,7 +116,7 @@ namespace CaloryCalcApp.Web.Controllers
             if (id == null) return NotFound();
             HealthyUser? user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound("User not found");
-            HealthyUserDTO userDTO = _mapper.Map<HealthyUserDTO>(user);
+            var userDTO = _mapper.Map<HealthyUserDTO>(user);
             return View(userDTO);
         }
         [HttpPost, ActionName("Delete")]
@@ -125,7 +125,7 @@ namespace CaloryCalcApp.Web.Controllers
             if (userDTO == null) return NotFound();
             HealthyUser? user = await _userManager.FindByIdAsync(userDTO.Id.ToString());
             if (user == null) return NotFound("User not found");
-            IdentityResult result = await _userManager.DeleteAsync(user);
+            var result = await _userManager.DeleteAsync(user);
             if (result.Succeeded) return RedirectToAction("Index");
             foreach (var error in result.Errors)
                 ModelState.AddModelError(string.Empty, error.Description);
@@ -134,44 +134,37 @@ namespace CaloryCalcApp.Web.Controllers
         }
 
 
-        // For the current logged-in user
         public async Task<IActionResult> UserDetailsAsync()
-        {            
+        {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound("User not logged in");
             }
-            // Map to DTO
-            HealthyUserDTO userDTO = _mapper.Map<HealthyUser, HealthyUserDTO>(user);
+            var userDTO = _mapper.Map<HealthyUserDTO>(user);
             userDTO.Name = user.UserName ?? "(no username)";
 
-            // Let's calculate Basal Metabolic Rate (BMR) by an activity factor
-            // A common formula is Mifflin-St Jeor
-            double BMR = 0;
-            if(user.Sex == Sex.Male)
+            double bmr = 0;
+            if (user.Sex == Sex.Male)
             {
-                BMR = 10 * user.Weight + 6.25 * user.Height - 5 * (DateTime.Today.Year - user.DateOfBirth.Year) + 5;
+                bmr = 10 * user.Weight + 6.25 * user.Height - 5 * (DateTime.Today.Year - user.DateOfBirth.Year) + 5;
             }
-            else if(user.Sex == Sex.Female)
+            else if (user.Sex == Sex.Female)
             {
-                BMR = 10 * user.Weight + 6.25 * user.Height - 5 * (DateTime.Today.Year - user.DateOfBirth.Year) - 161;
+                bmr = 10 * user.Weight + 6.25 * user.Height - 5 * (DateTime.Today.Year - user.DateOfBirth.Year) - 161;
             }
 
-            // Let's calucalte our tdee based on Activity Level:
             var tdeeDictionary = new Dictionary<string, double>
             {
-                { "Sedentary (little/no exercise)", BMR * 1.2 },
-                { "Lightly Active (light exercise/sports 1-3 days/week)", BMR * 1.375 },
-                { "Moderately Active (moderate exercise 3-5 days/week)", BMR * 1.55 },
-                { "Very Active (hard exercise 6-7 days/week)", BMR * 1.725 },
-                { "Super Active (very hard exercise/physical job)", BMR * 1.9 }
+                { "Sedentary (little/no exercise)", bmr * 1.2 },
+                { "Lightly Active (light exercise/sports 1-3 days/week)", bmr * 1.375 },
+                { "Moderately Active (moderate exercise 3-5 days/week)", bmr * 1.55 },
+                { "Very Active (hard exercise 6-7 days/week)", bmr * 1.725 },
+                { "Super Active (very hard exercise/physical job)", bmr * 1.9 }
             };
 
-            // Let's transfer calculated data to our RazorPage
-            ViewBag.BMR = BMR;
+            ViewBag.BMR = bmr;
             ViewBag.TDEE = tdeeDictionary;
-
 
             return View(userDTO);
         }
@@ -185,8 +178,8 @@ namespace CaloryCalcApp.Web.Controllers
 			var user = await _userManager.FindByIdAsync(id);
 			if (user == null)
 				return NotFound();
-			var userDTO = _mapper.Map<HealthyUser, HealthyUserDTO>(user);
-			return View(userDTO); 
+			var userDTO = _mapper.Map<HealthyUserDTO>(user);
+			return View(userDTO);
 		}
 
 		[HttpPost]
