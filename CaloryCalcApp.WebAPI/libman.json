@@ -4,21 +4,34 @@
   "libraries": [
     {
       "library": "bootstrap@5.3.8",
-      "destination": "wwwroot/lib/bootstrap/"
+      "destination": "wwwroot/lib/bootstrap/",
+      "files": [
+        "css/bootstrap.min.css",
+        "js/bootstrap.js"
+      ]
     },
     {
       "provider": "unpkg",
       "library": "jquery@3.7.1",
-      "destination": "wwwroot/lib/jquery/"
+      "destination": "wwwroot/lib/jquery/",
+      "files": [
+        "dist/jquery.min.js"
+      ]
     },
     {
       "provider": "unpkg",
       "library": "jquery-validation@1.19.5",
-      "destination": "wwwroot/lib/jquery-validation/"
+      "destination": "wwwroot/lib/jquery-validation/",
+      "files": [
+        "dist/jquery.validate.min.js"
+      ]
     },
     {
       "library": "jquery-validation-unobtrusive@4.0.0",
-      "destination": "wwwroot/lib/jquery-validation-unobtrusive/"
+      "destination": "wwwroot/lib/jquery-validation-unobtrusive/",
+      "files": [
+        "dist/jquery.validate.unobtrusive.min.js"
+      ]
     }
   ]
 }
