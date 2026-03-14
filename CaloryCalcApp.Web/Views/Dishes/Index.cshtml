@@ -1,0 +1,130 @@
+@* @model IEnumerable<CaloryCalcLibrary.Dish> *@
+@model X.PagedList.IPagedList<CaloryCalcApp.Application.DTOs.Dishes.DishDto>
+@using X.PagedList.Mvc.Core
+@using Microsoft.AspNetCore.Mvc;
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Dishes</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-secondary">Create New</a>
+</p>
+
+<form method="get" asp-action="Index">
+    <div class="mb-3 d-flex align-items-center">
+        <label for="pageSize" class="form-label me-2">Items on page:</label>
+        <select id="pageSize" name="pageSize" onchange="this.form.submit()" 
+        class="form-select w-auto">
+            <option value="10" selected="@(Model.PageSize == 10 ? "selected" : null)">10</option>
+            <option value="20" selected="@(Model.PageSize == 20 ? "selected" : null)">20</option>
+            <option value="50" selected="@(Model.PageSize == 50 ? "selected" : null)">50</option>
+        </select>
+    </div>
+    <input type="hidden" name="oldPageSize" value="@Model.PageSize" /> 
+    <input type="hidden" name="page" value="@Model.PageNumber" />
+    <table class="table table-hover align-middle shadow-sm rounded-3 overflow-hidden">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Name)
+                </th>                
+                <th>
+                    @Html.DisplayNameFor(model => model.First().TotalCalories)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().TotalCarbohydrates)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().TotalFats)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().TotalProteins)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => item.Name)
+                    </td>
+                    <td>
+                        @* @Html.DisplayFor(model => item.TotalCalories) *@
+                        @(item.TotalCalories.HasValue? item.TotalCalories.Value.ToString("0.###") : "")
+                    </td>
+                    <td>
+                        @* @Html.DisplayFor(model => item.TotalCarbohydrates) *@
+                        @(item.TotalCarbohydrates.HasValue? item.TotalCarbohydrates.Value.ToString("0.###") : "")
+                    </td>
+                    <td>
+                        @* @Html.DisplayFor(model => item.TotalFats) *@
+                        @(item.TotalFats.HasValue? item.TotalFats.Value.ToString("0.###") : "")
+                    </td>
+                    <td>
+                        @* @Html.DisplayFor(model => item.TotalProteins) *@
+                        @(item.TotalProteins.HasValue? item.TotalProteins.Value.ToString("0.###") : "")
+                    </td>
+                    <td>
+                        @if (User.IsInRole("admin") || User.IsInRole("manager"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                        }
+                        | <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-light">Details</a> |
+                        @if (User.IsInRole("admin") || User.IsInRole("manager"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+</form>
+
+@* Let's display the page numbers at the bottom *@
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@* @Html.PagedListPager(Model, page => Url.Action("Index", new { page, pageSize = Model.PageSize })) *@
+@Html.PagedListPager(
+Model,
+page => Url.Action("Index", new { page, pageSize = Model.PageSize }),
+    new X.PagedList.Mvc.Core.PagedListRenderOptions
+    {
+        LiElementClasses = new[] { "page-item" },
+        PageClasses = new[] { "page-link" },
+        UlElementClasses = new[] { "pagination", "justify-content-center" }
+    }
+)
+
+
+@* Commented code without pagination *@
+@* <table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table> *@
