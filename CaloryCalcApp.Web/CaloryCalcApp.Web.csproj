@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CaloryCalcLibrary\CaloryCalcApp.Domain.csproj" />
+    <ProjectReference Include="..\CaloryCalcApp.Domain\CaloryCalcApp.Domain.csproj" />
     <ProjectReference Include="..\CaloryCalcApp.Application\CaloryCalcApp.Application.csproj" />
     <ProjectReference Include="..\CaloryCalcApp.Infrastructure\CaloryCalcApp.Infrastructure.csproj" />
   </ItemGroup>
