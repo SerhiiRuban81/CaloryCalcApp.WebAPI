@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CaloryCalcLibrary
 {
@@ -17,7 +12,7 @@ namespace CaloryCalcLibrary
         [ForeignKey(nameof(Dish))]
         public int DishId { get; set; }
 
-        public string MeasurementUnit { get; set; } = default!; // "g" for grams, "ml" for milliliters, etc.
+        public string MeasurementUnit { get; set; } = default!;
 
         public float Amount { get; set; }
 

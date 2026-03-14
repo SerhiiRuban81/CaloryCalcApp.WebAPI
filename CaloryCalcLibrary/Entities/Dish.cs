@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace CaloryCalcLibrary
 {
@@ -15,7 +14,7 @@ namespace CaloryCalcLibrary
         public List<DishProduct> DishProducts { get; set; } = [];
 
         public List<HealthyUser> HealthyUsers { get; set; } = [];
-        
+
         public double? GetGlobalFats() => DishProducts.Select(t => t.Amount * t.Product.Fats * (t.MeasurementUnit == "g" ? 1 : t.Product.Density) / 100).Sum();
 
         public double? GetGlobalCalories() => DishProducts.Select(t => t.Amount * t.Product.Calories * (t.MeasurementUnit == "g" ? 1 : t.Product.Density) / 100).Sum();
