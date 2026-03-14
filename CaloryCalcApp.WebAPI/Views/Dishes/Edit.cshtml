@@ -1,4 +1,4 @@
-﻿@model CaloryCalcLibrary.Dish
+﻿@model CaloryCalcApp.Application.DTOs.Dishes.DishDto
 
 @{
     ViewData["Title"] = "Edit";
@@ -31,7 +31,7 @@
                                class="form-control product-search"
                                placeholder="Start typing product..."
                                autocomplete="off"
-                               value="@dp.Product?.Name" />
+                               value="@dp.ProductName" />
 
                         <select asp-for="DishProducts[@i].MeasurementUnit" class="form-control mb-1">
                             <option value="g">grams</option>

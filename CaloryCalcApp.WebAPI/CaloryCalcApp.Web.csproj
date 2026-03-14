@@ -28,6 +28,22 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CaloryCalcLibrary\CaloryCalcApp.Domain.csproj" />
+    <ProjectReference Include="..\CaloryCalcApp.Application\CaloryCalcApp.Application.csproj" />
+    <ProjectReference Include="..\CaloryCalcApp.Infrastructure\CaloryCalcApp.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="Models\DTOs\Admins\" />
+    <Folder Include="Models\DTOs\Dishes\" />
+    <Folder Include="Models\DTOs\DishProducts\" />
+    <Folder Include="Models\DTOs\HealthyUserDishes\" />
+    <Folder Include="Models\DTOs\HealthyUsers\" />
+    <Folder Include="Models\DTOs\Products\" />
+    <Folder Include="Models\DTOs\Roles\" />
+    <Folder Include="Models\DTOs\Users\" />
+    <Folder Include="Profiles\" />
   </ItemGroup>
 
 </Project>

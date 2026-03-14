@@ -1,6 +1,6 @@
 using AutoMapper;
-using CaloryCalcApp.Web.Data;
-using CaloryCalcApp.Web.Models.DTOs.HealthyUsers;
+using CaloryCalcApp.Infrastructure.Data;
+using CaloryCalcApp.Application.DTOs.HealthyUsers;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

@@ -1,5 +1,5 @@
 using AutoMapper;
-using CaloryCalcApp.Web.Models.DTOs.HealthyUsers;
+using CaloryCalcApp.Application.DTOs.HealthyUsers;
 using CaloryCalcApp.Web.Models.ViewModels.Users;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Identity;

@@ -1,4 +1,3 @@
-using CaloryCalcApp.Web.Models.DTOs.HealthyUsers;
 using Microsoft.AspNetCore.Identity;
 
 namespace CaloryCalcApp.Web.Models.ViewModels.Roles

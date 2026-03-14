@@ -1,6 +1,10 @@
-using CaloryCalcApp.Web.Data;
-using CaloryCalcApp.Web.Profiles;
+using CaloryCalcApp.Application.Profiles;
+using CaloryCalcApp.Application.Services;
+using CaloryCalcApp.Application.Services.Interfaces;
+using CaloryCalcApp.Infrastructure.Data;
+using CaloryCalcApp.Infrastructure.Repositories;
 using CaloryCalcLibrary;
+using CaloryCalcLibrary.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,8 +39,16 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile(new HealthyUserDishProfile());
     cfg.AddProfile(new HealthyUserProfile());
     cfg.AddProfile(new RoleProfile());
-}
-);
+});
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IDishRepository, DishRepository>();
+builder.Services.AddScoped<IHealthyUserDishRepository, HealthyUserDishRepository>();
+
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IDishService, DishService>();
+builder.Services.AddScoped<IHealthyUserDishService, HealthyUserDishService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
 
 var app = builder.Build();
 

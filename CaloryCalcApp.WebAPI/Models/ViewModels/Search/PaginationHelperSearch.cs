@@ -1,6 +1,5 @@
-using CaloryCalcApp.Web.Data;
-using CaloryCalcApp.Web.Models.DTOs.DishProducts;
-using CaloryCalcApp.Web.Models.DTOs.Products;
+using CaloryCalcApp.Application.DTOs.DishProducts;
+using CaloryCalcApp.Application.DTOs.Products;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 

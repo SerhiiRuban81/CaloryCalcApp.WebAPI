@@ -1,11 +1,7 @@
-using AutoMapper;
-using CaloryCalcApp.Web.Data;
-using CaloryCalcApp.Web.Models.DTOs.Products;
-using CaloryCalcLibrary;
+using CaloryCalcApp.Application.DTOs.Products;
+using CaloryCalcApp.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using X.PagedList;
 using X.PagedList.Extensions;
 
 
@@ -14,16 +10,14 @@ namespace CaloryCalcApp.Web.Controllers
     [Authorize]
     public class ProductsController : Controller
     {
-        private readonly IMapper _mapper;
-        private readonly CaloriesContext _context;
+        private readonly IProductService _productService;
 
-        public ProductsController(CaloriesContext context, IMapper mapper)
+        public ProductsController(IProductService productService)
         {
-            _context = context;
-            _mapper = mapper;
+            _productService = productService;
         }
 
-        public ActionResult Index(int page = 1, int pageSize = 10, int? oldPageSize = null)
+        public async Task<ActionResult> IndexAsync(int page = 1, int pageSize = 10, int? oldPageSize = null)
         {
             if (oldPageSize.HasValue && oldPageSize.Value != pageSize)
             {
@@ -31,9 +25,8 @@ namespace CaloryCalcApp.Web.Controllers
                 page = firstItemIndex / pageSize + 1;
             }
 
-            var products = _context.Products.OrderBy(p => p.Id);
-            var productDtos = _mapper.Map<List<ProductDto>>(products);
-            var pagedProducts = productDtos.ToPagedList(page, pageSize);
+            var products = await _productService.GetAllAsync();
+            var pagedProducts = products.OrderBy(p => p.Id).ToPagedList(page, pageSize);
 
             ViewBag.PageSize = pageSize;
             ViewBag.Page = page;
@@ -41,21 +34,11 @@ namespace CaloryCalcApp.Web.Controllers
             return View(pagedProducts);
         }
 
-
         public async Task<IActionResult> DetailsAsync(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
+            var product = await _productService.GetByIdAsync(id.Value);
+            if (product == null) return NotFound();
             return View(product);
         }
 
@@ -70,9 +53,7 @@ namespace CaloryCalcApp.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var product = _mapper.Map<Product>(productDto);
-                _context.Add(product);
-                await _context.SaveChangesAsync();
+                await _productService.CreateAsync(productDto);
                 return RedirectToAction(nameof(Index));
             }
             return View(productDto);
@@ -80,77 +61,38 @@ namespace CaloryCalcApp.Web.Controllers
 
         public async Task<IActionResult> EditAsync(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
+            var product = await _productService.GetByIdAsync(id.Value);
+            if (product == null) return NotFound();
             return View(product);
         }
 
-		[HttpGet]
-		public async Task<IActionResult> SearchProductsAsync(string term)
-		{
-			var products = await _context.Products
-				.Where(p => p.Name.Contains(term))
-				.Select(p => new { p.Id, p.Name })
-				.Take(10)
-				.ToListAsync();
-
-			return Json(products);
-		}
-
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> EditAsync(int id, [Bind("Id,Name,Density,Calories,Fats,Carbohydrates,Proteins")] Product product)
+        [HttpGet]
+        public async Task<IActionResult> SearchProductsAsync(string term)
         {
-            if (id != product.Id)
-            {
-                return NotFound();
-            }
+            var products = await _productService.SearchByNameAsync(term);
+            return Json(products.Take(10).Select(p => new { p.Id, p.Name }));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAsync(int id, [Bind("Id,Name,Density,Calories,Fats,Carbohydrates,Proteins")] ProductDto productDto)
+        {
+            if (id != productDto.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _productService.UpdateAsync(productDto);
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            return View(productDto);
         }
 
         public async Task<IActionResult> DeleteAsync(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
+            var product = await _productService.GetByIdAsync(id.Value);
+            if (product == null) return NotFound();
             return View(product);
         }
 
@@ -158,19 +100,8 @@ namespace CaloryCalcApp.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmedAsync(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product != null)
-            {
-                _context.Products.Remove(product);
-            }
-
-            await _context.SaveChangesAsync();
+            await _productService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.Id == id);
         }
     }
 }

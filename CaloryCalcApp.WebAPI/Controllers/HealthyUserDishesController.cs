@@ -1,32 +1,29 @@
-using AutoMapper;
-using CaloryCalcApp.Web.Data;
-using CaloryCalcApp.Web.Models.DTOs.HealthyUserDishes;
+using CaloryCalcApp.Application.DTOs.HealthyUserDishes;
+using CaloryCalcApp.Application.Services.Interfaces;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 using System.Security.Claims;
-using X.PagedList;
 using X.PagedList.Extensions;
-
 
 namespace CaloryCalcApp.Web.Controllers
 {
     [Authorize]
     public class HealthyUserDishesController : Controller
     {
-        private readonly CaloriesContext _context;
-        private readonly IMapper _mapper;
+        private readonly IHealthyUserDishService _healthyUserDishService;
+        private readonly IDishService _dishService;
         private readonly UserManager<HealthyUser> _userManager;
 
-        public HealthyUserDishesController(CaloriesContext context, IMapper mapper, UserManager<HealthyUser> userManager)
+        public HealthyUserDishesController(
+            IHealthyUserDishService healthyUserDishService,
+            IDishService dishService,
+            UserManager<HealthyUser> userManager)
         {
-            _context = context;
-            _mapper = mapper;
+            _healthyUserDishService = healthyUserDishService;
+            _dishService = dishService;
             _userManager = userManager;
         }
 
@@ -38,331 +35,142 @@ namespace CaloryCalcApp.Web.Controllers
                 page = firstItemIndex / pageSize + 1;
             }
 
-            var dishNameProperty = typeof(Dish).GetProperty("Name");
-            var dishNameDisplayAttribute = dishNameProperty?.GetCustomAttribute<DisplayAttribute>();
-            ViewBag.DishNameLabel = dishNameDisplayAttribute != null ? dishNameDisplayAttribute.Name : "Dish Name";
+            ViewBag.DishNameLabel = "Dish Name";
 
-            string? currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.ToString();
+            string? currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (currentUserId == null) return NotFound();
-            var currentUser = await _userManager.FindByIdAsync(currentUserId);
-            if (currentUser == null) return NotFound();
-            var currentRoles = await _userManager.GetRolesAsync(currentUser);
-            IQueryable<HealthyUserDish> healthyUserDishes;
-            if (currentRoles.Contains("admin"))
-            {
-                healthyUserDishes = _context.HealthyUserDishes
-                    .Include(h => h.Dish)
-                    .Include(h => h.HealthyUser)
-                    .OrderBy(h => h.Id);
-                
-            }
+
+            IEnumerable<HealthyUserDishDto> items;
+            if (User.IsInRole("admin"))
+                items = await _healthyUserDishService.GetAllWithDetailsAsync();
             else
-            {
-                healthyUserDishes = _context.HealthyUserDishes
-                    .Include(h => h.Dish)
-                    .Include(h => h.HealthyUser)
-                    .Where(h => h.HealthyUser.Id == currentUserId)
-                    .OrderBy(h => h.Id);
-            }
-            var healthyUserDishesDto = _mapper.Map<List<HealthyUserDishDto>>(healthyUserDishes);
-            var pagedHealthyUserDishes = healthyUserDishesDto.ToPagedList(page, pageSize);
-            ViewBag.DishNames = _context.Dishes.ToDictionary(d => d.Id, d => d.Name);
+                items = await _healthyUserDishService.GetByUserIdAsync(currentUserId);
+
+            var pagedItems = items.OrderBy(h => h.Id).ToPagedList(page, pageSize);
+
             ViewBag.PageSize = pageSize;
             ViewBag.Page = page;
-            return View(pagedHealthyUserDishes);
 
-
+            return View(pagedItems);
         }
 
         public async Task<IActionResult> DetailsAsync(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var healthyUserDish = await _context.HealthyUserDishes
-                .Include(h => h.Dish)
-                .Include(h => h.HealthyUser)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (healthyUserDish == null)
-            {
-                return NotFound();
-            }
-
-            return View(healthyUserDish);
+            if (id == null) return NotFound();
+            var item = await _healthyUserDishService.GetByIdAsync(id.Value);
+            if (item == null) return NotFound();
+            return View(item);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> CreateAsync()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             ViewBag.CurrentUserId = userId;
 
-            ViewData["DishId"] = new SelectList(_context.Dishes, "Id", "Name");
-            ViewData["HealthyUserId"] = new SelectList(_context.Users, "Id", "Id", userId);
+            var dishes = await _dishService.GetAllAsync();
+            ViewData["DishId"] = new SelectList(dishes, "Id", "Name");
+            ViewData["HealthyUserId"] = new SelectList(_userManager.Users, "Id", "Id", userId);
 
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAsync([Bind("Id,DishId,Amount,HealthyUserId,MealTime")] HealthyUserDishDto healthyUserDishDto)
+        public async Task<IActionResult> CreateAsync([Bind("Id,DishId,Amount,HealthyUserId,MealTime")] HealthyUserDishDto dto)
         {
             if (ModelState.IsValid)
             {
-                var healthyUserDish = _mapper.Map<HealthyUserDish>(healthyUserDishDto);
-                _context.Add(healthyUserDish);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                await _healthyUserDishService.CreateAsync(dto);
+                return RedirectToAction(nameof(Index));
             }
-            ViewData["DishId"] = new SelectList(_context.Dishes, "Id", "Name", healthyUserDishDto.DishId);
-            ViewData["HealthyUserId"] = new SelectList(_context.Users, "Id", "Id", healthyUserDishDto.HealthyUserId);
-            return View(healthyUserDishDto);
+
+            var dishes = await _dishService.GetAllAsync();
+            ViewData["DishId"] = new SelectList(dishes, "Id", "Name", dto.DishId);
+            ViewData["HealthyUserId"] = new SelectList(_userManager.Users, "Id", "Id", dto.HealthyUserId);
+            return View(dto);
         }
 
         public async Task<IActionResult> EditAsync(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
+            var item = await _healthyUserDishService.GetByIdAsync(id.Value);
+            if (item == null) return NotFound();
 
-            var healthyUserDish = await _context.HealthyUserDishes.FindAsync(id);
-            if (healthyUserDish == null)
-            {
-                return NotFound();
-            }
-            ViewData["DishId"] = new SelectList(_context.Dishes, "Id", "Name", healthyUserDish.DishId);
-            ViewData["HealthyUserId"] = new SelectList(_context.Users, "Id", "Id", healthyUserDish.HealthyUserId);
-            return View(healthyUserDish);
+            var dishes = await _dishService.GetAllAsync();
+            ViewData["DishId"] = new SelectList(dishes, "Id", "Name", item.DishId);
+            ViewData["HealthyUserId"] = new SelectList(_userManager.Users, "Id", "Id", item.HealthyUserId);
+            return View(item);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditAsync(int id, [Bind("Id,DishId,Amount,HealthyUserId,MealTime")] HealthyUserDish healthyUserDish)
+        public async Task<IActionResult> EditAsync(int id, [Bind("Id,DishId,Amount,HealthyUserId,MealTime")] HealthyUserDishDto dto)
         {
-            if (id != healthyUserDish.Id)
-            {
-                return NotFound();
-            }
+            if (id != dto.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(healthyUserDish);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!HealthyUserDishExists(healthyUserDish.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
+                await _healthyUserDishService.UpdateAsync(dto);
+                return RedirectToAction(nameof(Index));
             }
-            ViewData["DishId"] = new SelectList(_context.Dishes, "Id", "Name", healthyUserDish.DishId);
-            ViewData["HealthyUserId"] = new SelectList(_context.Users, "Id", "Id", healthyUserDish.HealthyUserId);
-            return View(healthyUserDish);
+
+            var dishes = await _dishService.GetAllAsync();
+            ViewData["DishId"] = new SelectList(dishes, "Id", "Name", dto.DishId);
+            ViewData["HealthyUserId"] = new SelectList(_userManager.Users, "Id", "Id", dto.HealthyUserId);
+            return View(dto);
         }
 
-        // GET: HealthyUserDishes/Delete/5
         public async Task<IActionResult> DeleteAsync(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var healthyUserDish = await _context.HealthyUserDishes
-                .Include(h => h.Dish)
-                .Include(h => h.HealthyUser)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (healthyUserDish == null)
-            {
-                return NotFound();
-            }
-
-            return View(healthyUserDish);
+            if (id == null) return NotFound();
+            var item = await _healthyUserDishService.GetByIdAsync(id.Value);
+            if (item == null) return NotFound();
+            return View(item);
         }
 
-        // POST: HealthyUserDishes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmedAsync(int id)
         {
-            var healthyUserDish = await _context.HealthyUserDishes.FindAsync(id);
-            if (healthyUserDish != null)
-            {
-                _context.HealthyUserDishes.Remove(healthyUserDish);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            await _healthyUserDishService.DeleteAsync(id);
+            return RedirectToAction(nameof(Index));
         }
-
 
         [HttpGet]
         public async Task<IActionResult> StatisticsAsync(int days = 7)
         {
-            // Let's define options for our time dropdown list on Razor page:
             var timeOptions = new List<SelectListItem>
             {
-                new SelectListItem { Value = "1", Text = "24 hours" },
-                new SelectListItem { Value = "7", Text = "7 days" },
-                new SelectListItem { Value = "30", Text = "30 days" },
-                new SelectListItem { Value = "90", Text = "90 days" },
+                new SelectListItem { Value = "1",   Text = "24 hours" },
+                new SelectListItem { Value = "7",   Text = "7 days" },
+                new SelectListItem { Value = "30",  Text = "30 days" },
+                new SelectListItem { Value = "90",  Text = "90 days" },
                 new SelectListItem { Value = "180", Text = "180 days" },
                 new SelectListItem { Value = "365", Text = "365 days" },
-                new SelectListItem { Value = "0", Text = "All recorded time" }
+                new SelectListItem { Value = "0",   Text = "All recorded time" }
             };
 
-            // Passing our time options to Razor page:
             ViewBag.TimeOptions = timeOptions;
+            ViewBag.SelectedDays = days.ToString();
 
-            ViewBag.SelectedDays = days.ToString(); // Passing selected time option to Razor page to set it as default value in dropdown list
-
-            // Let's get Id of current user:
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            // Getting our dishes, belonging to the current User
-            var userId1 = User.FindFirstValue(ClaimTypes.NameIdentifier); 
-            Console.WriteLine("UserId = " + userId1);
-            List<HealthyUserDish> healthyUserDishes;
-            // Let's get dishes, consumed by User during selected time period. If "All recorded time" option is selected, we will get all dishes, consumed by User based of choosen time
-            if (days != 0)
-            {
-                //Console.WriteLine("Selected time period: Last " + days + " days");
-                healthyUserDishes = await _context.HealthyUserDishes
-                .Include(h => h.Dish)
-                .ThenInclude(d => d.DishProducts).
-                ThenInclude(dp => dp.Product)
-                .Where(h => h.HealthyUserId == userId && h.MealTime >= DateTime.Now.AddDays(-days))
-                .ToListAsync();
-            }
-            else
-            {
-                //Console.WriteLine("Selected time period: All recorded time");
-                healthyUserDishes = await _context.HealthyUserDishes
-                .Include(h => h.Dish)
-                .ThenInclude(d => d.DishProducts).
-                ThenInclude(dp => dp.Product)
-                .Where(h => h.HealthyUserId == userId)
-                .ToListAsync();
-                days = (int)(DateTime.Now - healthyUserDishes.Min(h => h.MealTime)).TotalDays; // Calculate total days based on the earliest recorded meal time for the user
-            }
+            var stats = await _healthyUserDishService.GetStatisticsAsync(userId, days);
 
-            // Mapping our dishes to Dto before transferring to razor page
-            var healthyUserDishesDto = _mapper.Map<List<HealthyUserDishDto>>(healthyUserDishes);
+            ViewBag.MealData = Newtonsoft.Json.JsonConvert.SerializeObject(stats.DataPoints);
+            ViewBag.TotalCalories = stats.DataPoints.Sum(dp => dp.TotalCalories);
+            ViewBag.TotalFats = stats.DataPoints.Sum(dp => dp.TotalFats);
+            ViewBag.TotalProteins = stats.DataPoints.Sum(dp => dp.TotalProteins);
+            ViewBag.TotalCarbohydrates = stats.DataPoints.Sum(dp => dp.TotalCarbohydrates);
+            ViewBag.AverageCaloriesPerDay = stats.ActualDays > 0
+                ? Math.Round(ViewBag.TotalCalories / stats.ActualDays, 2) : 0;
+            ViewBag.AverageFatsPerDay = stats.ActualDays > 0
+                ? Math.Round(ViewBag.TotalFats / stats.ActualDays, 2) : 0;
+            ViewBag.AverageProteinsPerDay = stats.ActualDays > 0
+                ? Math.Round(ViewBag.TotalProteins / stats.ActualDays, 2) : 0;
+            ViewBag.AverageCarbohydratesPerDay = stats.ActualDays > 0
+                ? Math.Round(ViewBag.TotalCarbohydrates / stats.ActualDays, 2) : 0;
 
-            // Let's prepare data for chart: Date labels and total calories per date
-            var dataPoints = healthyUserDishes
-            .OrderBy(h => h.MealTime)
-            .Select(h => new
-            {
-                DateTime = h.MealTime.ToString("yyyy-MM-dd HH:mm"), // formatted DateTime
-                DishName = h.Dish.Name,
-                TotalCalories = ((h.Dish.GetGlobalCalories() ?? 0) / 100) * h.Amount,
-                TotalFats = ((h.Dish.GetGlobalFats() ?? 0) / 100) * h.Amount,
-                TotalProteins = ((h.Dish.GetGlobalProteins() ?? 0) / 100) * h.Amount,
-                TotalCarbohydrates = ((h.Dish.GetGlobalCarbohydrates() ?? 0) / 100) * h.Amount
-            }).ToList();
-
-            // Let's pass data to ViewBag for JavaScript consumptionon our Razor page
-            ViewBag.MealData = Newtonsoft.Json.JsonConvert.SerializeObject(dataPoints);
-
-            // Let's get total calories, fats, proteins and carbohydrates consumed by User during selected time period for displaying in summary section on Razor page
-            ViewBag.TotalCalories = dataPoints.Sum(dp => dp.TotalCalories);
-            ViewBag.TotalFats = dataPoints.Sum(dp => dp.TotalFats);
-            ViewBag.TotalProteins = dataPoints.Sum(dp => dp.TotalProteins);
-            ViewBag.TotalCarbohydrates = dataPoints.Sum(dp => dp.TotalCarbohydrates);
-            // Calculate average daily calories for the selected time period
-            ViewBag.AverageCaloriesPerDay = Math.Round(ViewBag.TotalCalories / days, 2);
-            ViewBag.AverageFatsPerDay = Math.Round(ViewBag.TotalFats / days, 2);
-            ViewBag.AverageProteinsPerDay = Math.Round(ViewBag.TotalProteins / days, 2);
-            ViewBag.AverageCarbohydratesPerDay = Math.Round(ViewBag.TotalCarbohydrates / days, 2);
-
-            return View(healthyUserDishesDto);
-
-
-
-
-            //Code before changes were done
-            /*
-            // Let's define options for our time dropdown list on Razor page:
-            var timeOptions = new List<SelectListItem>
-            {
-                new SelectListItem { Value = "1", Text = "24 hours" },
-                new SelectListItem { Value = "7", Text = "7 days" },
-                new SelectListItem { Value = "30", Text = "30 days" },
-                new SelectListItem { Value = "90", Text = "90 days" },
-                new SelectListItem { Value = "180", Text = "180 days" },
-                new SelectListItem { Value = "365", Text = "365 days" },
-                new SelectListItem { Value = "0", Text = "All recorded time" }
-            };
-
-            // Passing our time options to Razor page:
-            ViewBag.TimeOptions = timeOptions;
-
-            ViewBag.SelectedDays = days.ToString(); // Passing selected time option to Razor page to set it as default value in dropdown list
-
-            // Let's get Id of current user:
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            // Getting our dishes, belonging to the current User
-            var userId1 = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            Console.WriteLine("UserId = " + userId1);
-            List<HealthyUserDish> healthyUserDishes;
-            // Let's get dishes, consumed by User during selected time period. If "All recorded time" option is selected, we will get all dishes, consumed by User based of choosen time
-            if (days != 0)
-            {
-                //Console.WriteLine("Selected time period: Last " + days + " days");
-                healthyUserDishes = await _context.HealthyUserDishes
-                .Include(h => h.Dish)
-                .ThenInclude(d => d.DishProducts).
-                ThenInclude(dp => dp.Product)
-                .Where(h => h.HealthyUserId == userId && h.MealTime >= DateTime.Now.AddDays(-days))
-                .ToListAsync();
-            }
-            else
-            {
-                //Console.WriteLine("Selected time period: All recorded time");
-                healthyUserDishes = await _context.HealthyUserDishes
-                .Include(h => h.Dish)
-                .Where(h => h.HealthyUserId == userId)
-                .ToListAsync();
-            }
-
-            // Mapping our dishes to Dto before transferring to razor page
-            var healthyUserDishesDto = _mapper.Map<List<HealthyUserDishDto>>(healthyUserDishes);
-            // Getting Id's of User's dishes
-            var usedDishIds = healthyUserDishesDto.Select(x => x.DishId).Distinct().ToList();
-            // Getting dishes names, belonging to our Users
-            var dishNames = await _context.Dishes.Where(d => usedDishIds.Contains(d.Id)).ToDictionaryAsync(d => d.Id, d => d.Name);
-            // Getting dish calories for each User's dish and calculating total calories for each dish based on consumed amount of the dish by User
-            var dishCalories = new Dictionary<DateTime, double>(); // Our dictionary to store data in format <MealTime, TotalCaloriesConsumed>
-            foreach (var d in healthyUserDishes)
-            {
-                double? globalCalories = d.Dish.GetGlobalCalories(); // calories per 100g
-                double totalCalories = (globalCalories ?? 0) / 100 * d.Amount;
-                dishCalories[d.MealTime] = totalCalories;
-            }
-
-            ViewBag.DishCalories = dishCalories;
-
-            // Returning ViewBag with dishes names fro further using on our Razor page
-            ViewBag.DishNames = dishNames;
-            return View(healthyUserDishesDto);*/
-        }
-
-        // Function to check if a HealthyUserDish with a given Id exists in the database
-        private bool HealthyUserDishExists(int id)
-        {
-            return _context.HealthyUserDishes.Any(e => e.Id == id);
+            return View(stats.Dishes);
         }
     }
 }
-

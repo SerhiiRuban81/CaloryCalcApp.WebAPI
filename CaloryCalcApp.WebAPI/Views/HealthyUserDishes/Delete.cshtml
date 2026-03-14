@@ -1,4 +1,4 @@
-﻿@model CaloryCalcLibrary.HealthyUserDish
+﻿@model CaloryCalcApp.Application.DTOs.HealthyUserDishes.HealthyUserDishDto
 
 @{
     ViewData["Title"] = "Delete";
@@ -24,16 +24,16 @@
             @Html.DisplayFor(model => model.MealTime)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.HealthyUser)
+            User
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.HealthyUser.Id)
+            @Html.DisplayFor(model => model.HealthyUserId)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Dish)
+            Dish
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Dish.Name)
+            @Html.DisplayFor(model => model.DishName)
         </dd>
     </dl>
     

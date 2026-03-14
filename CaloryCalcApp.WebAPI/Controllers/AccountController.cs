@@ -1,5 +1,5 @@
 using AutoMapper;
-using CaloryCalcApp.Web.Models.DTOs.Admins;
+using CaloryCalcApp.Application.DTOs.Admins;
 using CaloryCalcLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
