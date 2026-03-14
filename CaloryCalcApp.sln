@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.3.11520.95
@@ -10,6 +10,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaloryCalcApp.Infrastructure", "CaloryCalcApp.Infrastructure\CaloryCalcApp.Infrastructure.csproj", "{B8DB464E-BF36-020B-475E-172D1C6C277A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaloryCalcApp.Application", "CaloryCalcApp.Application\CaloryCalcApp.Application.csproj", "{57E054E4-84BB-B32C-9A67-E18FE536B50C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaloryCalcApp.Tests", "Tests\CaloryCalcApp.Tests\CaloryCalcApp.Tests.csproj", "{F8838454-4209-4063-BD2A-6ACD1BE663EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,9 +73,24 @@ Global
 		{57E054E4-84BB-B32C-9A67-E18FE536B50C}.Release|x64.Build.0 = Release|Any CPU
 		{57E054E4-84BB-B32C-9A67-E18FE536B50C}.Release|x86.ActiveCfg = Release|Any CPU
 		{57E054E4-84BB-B32C-9A67-E18FE536B50C}.Release|x86.Build.0 = Release|Any CPU
+		{F8838454-4209-4063-BD2A-6ACD1BE663EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8838454-4209-4063-BD2A-6ACD1BE663EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8838454-4209-4063-BD2A-6ACD1BE663EE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F8838454-4209-4063-BD2A-6ACD1BE663EE}.Debug|x64.Build.0 = Debug|Any CPU
+		{F8838454-4209-4063-BD2A-6ACD1BE663EE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F8838454-4209-4063-BD2A-6ACD1BE663EE}.Debug|x86.Build.0 = Debug|Any CPU
+		{F8838454-4209-4063-BD2A-6ACD1BE663EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8838454-4209-4063-BD2A-6ACD1BE663EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8838454-4209-4063-BD2A-6ACD1BE663EE}.Release|x64.ActiveCfg = Release|Any CPU
+		{F8838454-4209-4063-BD2A-6ACD1BE663EE}.Release|x64.Build.0 = Release|Any CPU
+		{F8838454-4209-4063-BD2A-6ACD1BE663EE}.Release|x86.ActiveCfg = Release|Any CPU
+		{F8838454-4209-4063-BD2A-6ACD1BE663EE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F8838454-4209-4063-BD2A-6ACD1BE663EE} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {151D0A26-D784-46C7-B2C4-B48784CBD6D0}
