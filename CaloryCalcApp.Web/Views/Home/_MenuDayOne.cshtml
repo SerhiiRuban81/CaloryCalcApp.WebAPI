@@ -1,0 +1,111 @@
+@model CaloryCalcApp.Application.DTOs.HealthyUserDishes.HealthyUserDishDto;
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var menu = new List<string>
+    {
+        "Breakfast",
+        "Lunch",
+        "Dinner"
+    };
+}
+
+<div class="d-flex flex-column gap-3 w-100">
+
+    @foreach (var meal in menu)
+    {
+        <div class="meal-item border border-secondary d-flex justify-content-between align-items-center gap-5 p-3 rounded">
+
+            <span class="fw-semibold text-secondary">@meal</span>
+
+            <div class="d-flex align-items-center gap-3 ">
+                <button class="btn btn-success rounded-circle d-flex align-items-center justify-content-center"
+                        style="width:32px; height:32px; padding:0;"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addFoodModal">
+
+                    <img src="~/images/add_17709114.png"
+                         width="16"
+                         height="16" />
+
+                </button>
+            </div>
+        </div>
+    }
+
+</div>
+
+<div class="modal fade" id="addFoodModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Add Dish</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <form asp-controller="HealthyUserDishes"
+                      asp-action="Create"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="DishId" class="form-label"></label>
+                        <select asp-for="DishId" class="form-select" asp-items="ViewBag.DishId" id="dishSelect">
+                            <option value="">-- Select a dish or create new --</option>
+                            <option value="create_new">+ Create new dish</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Amount" class="form-label"></label>
+                        <input asp-for="Amount" class="form-control" />
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+
+                    <input type="hidden"
+                           asp-for="HealthyUserId"
+                           value="@ViewBag.UserId" />
+
+                    <div class="mb-3">
+                        <label asp-for="MealTime" class="form-label"></label>
+                        <input asp-for="MealTime"
+                               class="form-control"
+                               type="datetime-local"
+                               value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                    </div>
+
+                    <div class="modal-footer px-0">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-success">
+                            Save
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('dishSelect').addEventListener('change', function() {
+        if (this.value === 'create_new') {
+            window.location.href = '@Url.Action("Create", "Dishes")';
+        }
+    });
+</script>

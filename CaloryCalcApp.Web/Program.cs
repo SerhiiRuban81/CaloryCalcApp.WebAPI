@@ -1,0 +1,78 @@
+using CaloryCalcApp.Application.Profiles;
+using CaloryCalcApp.Application.Services;
+using CaloryCalcApp.Application.Services.Interfaces;
+using CaloryCalcApp.Infrastructure.Data;
+using CaloryCalcApp.Infrastructure.Repositories;
+using CaloryCalcLibrary;
+using CaloryCalcLibrary.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddEndpointsApiExplorer();
+
+string connStr = builder.Configuration.GetConnectionString("CaloriesContext")
+    ?? throw new InvalidOperationException("Connection string 'CaloriesContext' not found!");
+
+builder.Services.AddDbContext<CaloriesContext>(options => {
+    options.UseSqlServer(connStr);
+});
+
+builder.Services.AddIdentity<HealthyUser, IdentityRole>()
+    .AddEntityFrameworkStores<CaloriesContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(
+    options => {
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+    });
+
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile(new ProductProfile());
+    cfg.AddProfile(new DishProductProfile());
+    cfg.AddProfile(new DishProfile());
+    cfg.AddProfile(new HealthyUserDishProfile());
+    cfg.AddProfile(new HealthyUserProfile());
+    cfg.AddProfile(new RoleProfile());
+});
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IDishRepository, DishRepository>();
+builder.Services.AddScoped<IHealthyUserDishRepository, HealthyUserDishRepository>();
+
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IDishService, DishService>();
+builder.Services.AddScoped<IHealthyUserDishService, HealthyUserDishService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
+
+var app = builder.Build();
+
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    IServiceProvider serviceProvider = scope.ServiceProvider;
+    await SeedData.Initialize(
+    serviceProvider,
+    app.Environment,
+    app.Configuration
+    );
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseDefaultFiles();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();

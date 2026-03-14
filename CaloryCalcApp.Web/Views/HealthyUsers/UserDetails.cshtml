@@ -1,0 +1,223 @@
+@model CaloryCalcApp.Application.DTOs.HealthyUsers.HealthyUserDto
+<h2>User Details</h2>
+
+<div class="card shadow-sm p-4 mb-3">
+    <p>Name: @Model.Name</p>
+    <p>
+        Weight: @Model.Weight kg
+        <button id="changeWeightBtn" type="button" class="btn btn-secondary">Change Weight</button>
+    </p>
+    <div id="weightInputDiv" style="display:none;">
+        <form method="post" action="/HealthyUsers/WeightUpdate">
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <input type="text" name="NewWeight" value="@Model.Weight" />
+            <button type="submit" class="btn btn-success">Save</button>
+        </form>
+    </div>
+    <p>Height: @Model.Height cm</p>
+    <p>Date of Birth: @Model.DateOfBirth.ToShortDateString()</p>
+</div>
+
+<div class="card shadow-sm p-4 mb-3">
+    <h2 class="mb-3">Required Calories depending on Your Activity and Goals</h2>
+    <p><strong>BMR:</strong> @ViewBag.BMR</p>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Activity Level</th>
+                <th>Estimated TDEE</th>
+                <th>Goals</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var tdeeDict = ViewBag.TDEE as Dictionary<string, double>;
+            }
+            @if (tdeeDict != null)
+            {
+                @foreach (var item in tdeeDict)
+                {
+                    var sedentaryTDEE = item.Value;
+                    var adjustedLoss = sedentaryTDEE - 500;
+                    var adjustedGain = sedentaryTDEE + 300;
+
+                    bool isFemale = Model.Sex == "Female";
+                    bool belowMinLoss = isFemale ? adjustedLoss < 1200 : adjustedLoss < 1500;
+                    bool belowMinMaintain = isFemale ? sedentaryTDEE < 1200 : sedentaryTDEE < 1500;
+                    bool belowMinGain = isFemale ? adjustedGain < 1200 : adjustedGain < 1500;
+                    <tr>
+                        <td>@item.Key</td>
+                        <td>@Math.Round(item.Value, 0) calories</td>
+                        <td>
+                            <ul>
+                                <li>
+                                    <h3>Weight Loss</h3>
+                                    @if (belowMinLoss)
+                                    {
+                                        <p class="text-warning">Warning: Your adjusted sedentary TDEE for weight loss is below the recommended minimum. Please consult with your doctor.</p>
+                                    }
+                                    else
+                                    {
+                                        <p>@Math.Round(adjustedLoss, 0) calories</p>
+                                    }
+                                </li>
+                                <li>
+                                    <h3>Maintaining</h3>
+                                    @if (belowMinMaintain)
+                                    {
+                                        <p class="text-warning">Warning: Your sedentary TDEE for maintaining is below the recommended minimum. Please consult with your doctor.</p>
+                                    }
+                                    else
+                                    {
+                                        <p>@Math.Round(sedentaryTDEE, 0) calories</p>
+                                    }
+                                </li>
+                                <li>
+                                    <h3>Weight Gain</h3>
+                                    @if (belowMinGain)
+                                    {
+                                        <p class="text-warning">Warning: Your adjusted sedentary TDEE for weight gain is below the recommended minimum. Please consult with your doctor.</p>
+                                    }
+                                    else
+                                    {
+                                        <p>@Math.Round(adjustedGain, 0) calories</p>
+                                    }
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                }
+            }            
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const changeBtn = document.getElementById('changeWeightBtn');
+            const weightDiv = document.getElementById('weightInputDiv');
+            changeBtn.onclick = () => {
+                weightDiv.style.display = (weightDiv.style.display === 'none') ? 'block' : 'none';
+            };
+        });
+    </script>
+}
+
+
+@* @model CaloryCalcApp.WebAPI.Models.DTOs.HealthyUsers.HealthyUserDto
+<h2>User Details</h2>
+
+<div class="card shadow-sm p-4 mb-3">
+    <p>Name: @Model.Name</p>
+    <p>
+        Weight: @Model.Weight kg
+        <button id="changeWeightBtn">Change Weight</button>
+    </p>
+    <div id="weightInputDiv" style="display:none;">
+        <form method="post" action="/HealthyUsers/WeightUpdate">
+            <input type="hidden" name="userDto.Id" value="@Model.Id" />
+            <input type="text" name="NewWeight" value="@Model.Weight" />
+            <button type="submit">Save</button>
+        </form>
+    </div>
+	<p>Height: @Model.Height cm</p>
+	<p>Date of Birth: @Model.DateOfBirth.ToShortDateString()</p>
+    <br />
+</div>
+<div class="card shadow-sm p-4 mb-3">
+    <h2 class="mb-3">Required Calories depending on Your Activity and Goals</h2>
+    <p><strong>BMR:</strong> @ViewBag.BMR</p>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Activity Level</th>
+                <th>Estimated TDEE</th>
+                <th>Goal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in ViewBag.TDEE as Dictionary<string, double>)
+            {
+                <tr>
+                    <td>@item.Key</td>
+                    <td>@Math.Round(item.Value, 0) calories</td>
+                    <td>
+                        <ul>
+                            <li>
+								<h3>Weight Loss:</h3>
+                                @if (Model.Sex == "Female" && ((double)ViewBag.TDEE["Sedentary"] - 500) < 1200)
+                                {
+                                    <p>Warning: Your adjusted sedentary TDEE is below the recommended minimum of 1200 calories. Please consult with doctor to adjust ration accordingly. At least 1200 calories per day required.</p>
+                                }
+                                else if (Model.Sex == "Male" && ((double)ViewBag.TDEE["Sedentary"] - 500) < 1500)
+                                {
+                                    <p> Warning: Your adjusted sedentary TDEE is below the recommended minimum of 1500 calories. Please consult with doctor to adjust ration accordingly. At least 1500 calories per day required.</p >
+                                }
+                                else
+                                {
+                                    <p>@Math.Round(item.Value - 500, 0) calories</p>
+                                }
+                            </li>
+                            <li>
+								<h3>Weight maintaining:</h3>
+                                @if (Model.Sex == "Female" && ((double)ViewBag.TDEE["Sedentary"]) < 1200)
+                                {
+                                    <p>Warning: Your adjusted sedentary TDEE is below the recommended minimum of 1200 calories. Please consult with doctor to adjust ration accordingly. At least 1200 calories per day required.</p>
+                                }
+                                else if (Model.Sex == "Male" && ((double)ViewBag.TDEE["Sedentary"]) < 1500)
+                                {
+                                    <p> Warning: Your adjusted sedentary TDEE is below the recommended minimum of 1500 calories. Please consult with doctor to adjust ration accordingly. At least 1500 calories per day required.</p>
+                                }
+                                else
+                                {
+                                    <p>@Math.Round(item.Value, 0) calories</p>
+                                }
+                                <p>@Math.Round(item.Value, 0) calories</p>
+                            </li>
+                            <li>
+                                <h3>Weight Gain</h3>
+                                @if (Model.Sex == "Female" && ((double)ViewBag.TDEE["Sedentary"] + 300) < 1200)
+                                {
+                                    <p>Warning: Your adjusted sedentary TDEE is below the recommended minimum of 1200 calories. Please consult with doctor to adjust ration accordingly. At least 1200 calories per day required.</p>
+                                }
+                                else if (Model.Sex == "Male" && ((double)ViewBag.TDEE["Sedentary"] + 300) < 1500)
+                                {
+                                    <p> Warning: Your adjusted sedentary TDEE is below the recommended minimum of 1500 calories. Please consult with doctor to adjust ration accordingly. At least 1500 calories per day required.</p>
+                                }
+                                else
+                                {
+                                    <p>@Math.Round(item.Value, 0) calories</p>
+                                }
+                                <p>@Math.Round(item.Value + 300, 0) calories</p>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form'); // or better, assign an id to your form
+            const weightInput = document.querySelector('input[name="NewWeight"]');
+            const changeBtn = document.getElementById('changeWeightBtn');
+
+            // Show input div
+            changeBtn.onclick = () => {
+                document.getElementById('weightInputDiv').style.display = 'block';
+            };
+
+            // Format input before submitting
+            // form.onsubmit = () => {
+            //     if (weightInput.value.includes('.')) {
+            //         weightInput.value = weightInput.value.replace('.', ',');
+            //     }
+            // };
+        });
+    </script>
+
+} *@

@@ -1,0 +1,52 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using CaloryCalcApp.Web.Models.ViewModels.Claims;
+@model IndexClaimsVM
+@{
+    ViewData["Title"] = "UserClaims";
+}
+
+<h1>Claims about User @Model.UserName</h1>
+<h2>Email: @Model.Email</h2>
+<a asp-action="CreateUserClaim" asp-route-id="@Model.UserId" class="btn btn-secondary">Add claim</a>
+<hr />
+@if (Model.Claims != null && Model.Claims.Count() > 0)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Claim type</th>
+                <th>Value</th>
+                <th>Value type</th>
+                <th>Issuer</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var claim in Model.Claims)
+            {
+                <tr>
+                    <td>@claim.Type</td>
+                    <td>@claim.Value</td>
+                    <td>@claim.ValueType</td>
+                    <td>@claim.Issuer</td>
+                    <td>
+                        <form asp-action="Delete" method="post">
+                            <input type="hidden" name="userId" value="@Model.UserId" />
+                            <input type="hidden" name="claimValues"
+                                   value="@claim.Type;@claim.Value;@claim.Issuer" />
+                            <input type="hidden" name="returnUrl" value="@Url.Action("UserClaims", "Claims", new { id = Model.UserId })" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No claims found for this user.</p>
+}
+
